@@ -1,0 +1,56 @@
+/* start pagination styles */
+.total-entries {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 14px;
+}
+
+.entry-count {
+  padding-top: 15px;
+  padding-bottom: 10px;
+  font-size: 14px;
+}
+
+.pagination-list {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  margin-top: 8px;
+  list-style-type: none;
+
+  li {
+    display: inline-block;
+    padding: 8px;
+    padding-top: 7px;
+    color: $dkGray;
+    margin-left: 2px;
+    margin-right: 2px;
+    cursor: pointer;
+
+    &.selected {
+      @include themify($themes) {
+        background-color: themed("openDkSolid");
+      }
+      border-radius: 3px;
+      color: $white;
+    }
+    &:not(.disabled) {
+      &:not(.selected):hover {
+        @include themify($themes) {
+          background-color: themed("openUltraLtSolid");
+        }
+        border-radius: 3px;
+      }
+    }
+
+    &.disabled {
+      color: $gray;
+      cursor: default;
+      &:hover {
+        background-color: none;
+      }
+    }
+  }
+}
+
+/* end pagination styles */
