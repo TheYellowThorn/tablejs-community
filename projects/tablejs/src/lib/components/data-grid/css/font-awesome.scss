@@ -1,0 +1,151 @@
+.fa-grip-horizontal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  color: $gray;
+
+  &:hover {
+    color: $dkGray;
+  }
+}
+.fa-bars {
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: grab;
+  color: $white;
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+.fa-sort {
+  position: relative;
+  top: 0px;
+  padding-left: 3px;
+  cursor: ew-resize;
+  color: $white;
+}
+i[resizableGrip] {
+  &.fa-sort {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    padding-left: 0px;
+    transform: translateY(-50%) rotate(90deg);
+  }
+}
+.fa-arrow-up,
+.fa-arrow-down {
+  position: relative;
+  top: 0px;
+  padding-left: 3px;
+  cursor: pointer;
+  color: $white;
+  font-size: 11px;
+
+  ::before {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+.fa-arrows-alt-v,
+.fa-long-arrow-alt-up,
+.fa-long-arrow-alt-down {
+  position: relative;
+  top: 0px;
+  padding-left: 3px;
+  cursor: pointer;
+  color: $white;
+  font-size: 11px;
+  font-weight: 900;
+}
+.fa-long-arrow-alt-up:after {
+  position: relative;
+  font-family: "Font Awesome\ 5 Free";
+  content: "\f309";
+  font-size: 11px;
+  font-weight: 900;
+  top: 1px;
+  padding-left: 0px;
+}
+
+.fa-caret-right {
+  font-size: 16px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  color: $dkGray;
+  transform: translate(-50%, -50%) rotate(0deg);
+  cursor: pointer;
+}
+
+.fa-check-circle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 10px;
+  font-size: 1.4em;
+  z-index: 10;
+  color: $check-green;
+}
+.fa-exclamation-circle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 10px;
+  font-size: 1.4em;
+  z-index: 10;
+  color: $error-red;
+}
+
+.fa-times {
+  position: absolute;
+  left: 32px;
+  top: 50%;
+  padding-left: 0px;
+  transform: translateY(-50%) rotate(90deg);
+  cursor: pointer;
+  color: $white;
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.fa-th {
+  position: relative;
+  top: 0px;
+  padding-left: 3px;
+  cursor: pointer;
+  @include themify($themes) {
+    padding: themed('tablePaddingTop');
+    margin-bottom: themed('tablePaddingTop');
+    font-size: themed('tableFontSize');
+    background-color: themed("openDkSolid");
+  }
+  color: $white;
+  // border: 1px solid #444444;
+  border-radius: 3px;
+
+  &::before {
+    @include themify($themes) {
+      margin-right: themed('tablePadding');
+    }
+  }
+
+  span {
+    font-family: "Nunito", serif;
+  }
+
+  &:hover {
+    @include themify($themes) {
+      background-color: themed("openUltraDkSolid");
+    }
+  }
+}
