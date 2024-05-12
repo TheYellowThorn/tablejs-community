@@ -1,0 +1,175 @@
+@import './css/variables.scss';
+@import './css/common.scss';
+@import './css/tablejs-standard.scss';
+@import './css/form-controls.scss';
+@import './css/angular-material.scss';
+@import './css/spinner.scss';
+@import './css/font-awesome.scss';
+@import './css/pagination.scss';
+@import './css/reorder-ghost.scss';
+
+table tbody.tablejs-infinite-scroll-viewport {
+  max-height: 450px !important;
+}
+.grid {
+    &__title {
+        text-align: left;
+        color: #fff !important;
+        letter-spacing: 0px;
+        display: block;
+        font-size: 12px !important;
+        line-height: 12px !important;
+        word-break: break-word;
+        white-space: break-spaces;
+        align-self: center;
+        align-items: center;
+
+        div {
+          font-weight: bold;
+        }
+    }
+    tr {
+        th, td {
+            padding: 6px 10px 6px 2px !important;
+        }
+    }
+    &__thead {
+        z-index: 2;
+        tr {
+            z-index: 2;
+        }
+    }
+    &__tbody {
+        tr {
+            &:hover {
+                box-shadow: 3px 3px 6px #00000029;
+                z-index: 1;
+            }
+        }
+    }
+}
+
+table {
+    tr {
+        th, td {
+            div {
+                padding: 0.5rem !important;
+            }
+            > div {
+                font: normal normal 400 14px/17px Intro, 'Trebuchet MS', Helvetica, Arial, sans-serif !important;
+                padding: 0.5rem !important;
+            }
+        }
+    }
+}
+.header-content {
+    white-space: normal;
+    line-height: 1;
+    padding: 0px;
+    padding-top: 4px;
+}
+.shifted-table-name {
+    padding-left: 20px;
+    width: calc(100% - 10px);
+    
+}
+.shift-short {
+    width: calc(100% - 20px);
+}
+.shift-extra-short {
+    width: calc(100% - 30px);
+}
+
+.fa-arrow-up,
+.fa-arrow-down {
+  position: relative;
+  right: 0px;
+  top: 0px;
+  padding-left: 3px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 11px;
+
+  &:hover {
+    color: #ccc;
+  }
+
+  ::before {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+.fa-arrows-alt-v,
+.fa-long-arrow-alt-up,
+.fa-long-arrow-alt-down {
+  position: relative;
+  right: 0px;
+  top: 0px;
+  padding-left: 3px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  &:hover {
+    color: #ccc;
+  }
+}
+.fa-long-arrow-alt-up:after {
+  position: relative;
+  font-family: 'Font Awesome\ 5 Free';
+  content: '\f309';
+  font-size: 11px;
+  font-weight: 900;
+  top: 1px;
+  padding-left: 0px;
+}
+.selectable-row {
+    cursor: pointer;
+}
+.fa-bars {
+    cursor: grab;
+    color: #fff;
+
+    &:hover {
+        color: #ccc;
+    }
+}
+.vert-center {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.vertical-text {
+    align-items: center;
+    display: flex;
+  }
+  .spinner {
+    display: inline-block;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border: 3px solid;
+    border-color: #333;
+    border-top-color: transparent;
+    margin-right: 10px;
+    border-radius: 50%;
+    animation: spin 1s ease-in-out infinite;
+    -webkit-animation: spin 1s ease-in-out infinite;
+    top: 0px;
+    left: 0px;
+  }
+  
+  @keyframes spin {
+    to {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  
+  @-webkit-keyframes spin {
+    to {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+
+
