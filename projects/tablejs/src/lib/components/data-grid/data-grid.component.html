@@ -1,0 +1,116 @@
+<ng-template #reorderTemplate let-header="header">
+  <div class="reorder-ghost">
+    <i class="fas fa-arrows-alt"></i><span>{{ header }}</span>
+  </div>
+</ng-template>
+<ng-container *ngIf="!gridIsRefreshing">
+  <tablejs-grid
+    [ngClass]="{ hideGrid: !showGrid }"
+    (gridInitialize)="gridInitialized($event)"
+    (columnResizeStart)="columnResizeStart($event)"
+    (columnResize)="columnResize($event)"
+    (columnResizeEnd)="columnResizeEnd($event)"
+    (columnReorderStart)="columnReorderStart($event)"
+    (columnReorder)="columnReorder($event)"
+    (columnReorderEnd)="columnReorderEnd($event)"
+  >
+    <table
+      tablejsScrollViewport
+      arrowDownSpeed="1"
+      arrowUpSpeed="1"
+      preItemOverflow="2"
+      postItemOverflow="2"
+      (viewportReady)="viewportReady($event)"
+      (rangeUpdated)="rangeUpdated($event)"
+    >
+      <thead class="grid__thead">
+        <tr tablejsGridRow>
+          <th class="text-uppercase auto-height"
+            *ngFor="let config of columnConfigs; let j = index;"
+            [attr.id]="config.id ? config.id : null"
+            [tablejsDataColClasses]="config.dataClass + '-col'"
+            [attr.reorderCol]="config.reorderable"
+            [reorderGhost]="reorderTemplate" [reorderGhostContext]="{ header: config.name }"
+          >
+            <div class="grid__title">
+              <div class="center-vertically">
+                <div class="no-wrap">
+                  <i #reorderGrip *ngIf="config.reorderable" class="fas fa-bars vert-center" reorderGrip></i>
+
+                  <ng-template *ngIf="config.tableHeaderTemplateRef; else headerTextContent" [ngTemplateOutlet]="config.tableHeaderTemplateRef"
+                        [ngTemplateOutletContext]="{ columnIndex: j, config: config }">
+                  </ng-template>
+
+                  <ng-template #headerTextContent>
+                    <span class="header-content"
+                      [ngClass]="{ 'shifted-table-name': config.reorderable,
+                        'shift-short' : !config.reorderable && config.sortOptions,
+                        'shift-extra-short': config.reorderable && config.sortOptions
+                      }"
+                    >{{ config.name }}</span>
+                  </ng-template>
+
+                  <i *ngIf="config.sortOptions"
+                      class="fas vert-center"
+                      [ngClass]="getArrowClass(config.sortOptions)"
+                      (click)="sortColumnBy(config.sortOptions)"
+                  ></i>
+
+                </div>
+              </div>
+              <div *ngIf="config.resizable" class="vertical-resize-grip-line" resizableGrip></div>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        tablejsViewport
+        [ngClass]="{
+          fitGridHeightToItems: allItemsFitInViewport,
+          shrinkTable: data.length === 0
+        }"
+        class="auto-height grid__tbody"
+      >
+
+          <tr
+              *tablejsVirtualFor="let item of data; let i = index;"
+              tablejsGridRow
+              [ngClass]="{'selectable-row': rowIsSelectable, 'odd': i % 2 === 1 }"
+              (click)="onRowSelected($event, item)"
+          >
+              <td *ngFor="let config of columnConfigs; let j = index;">
+              <div [tablejsDataColClass]="config.dataClass + '-col'" [initialWidth]="config.width">
+                <div class="center-vertically">
+                    <ng-template *ngIf="config.tableDataTemplateRef; else textContent" [ngTemplateOutlet]="config.tableDataTemplateRef"
+                      [ngTemplateOutletContext]="{ item: item, index: i, columnIndex: j, config: config }">
+                    </ng-template>
+                    <ng-template #textContent>
+                      {{ item[(config.dataClass)] }}
+                    </ng-template>
+                </div>
+              </div>
+              </td>
+          </tr>
+          <ng-container *ngIf="data.length === 0">
+            <tr *ngIf="!loading">
+              <td>
+                  <div class="no-data-found vertical-text">
+                      No Data Found.
+                  </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="loading">
+              <td>
+                <div class="vertical-text">
+                    <div class="spinner"></div>
+                    Loading Data...
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+          
+      </tbody>
+    </table>
+  </tablejs-grid>
+</ng-container>
