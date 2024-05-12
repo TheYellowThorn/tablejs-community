@@ -1,0 +1,33 @@
+.vertical-text {
+  align-items: center;
+  display: flex;
+}
+.spinner {
+  display: inline-block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: 3px solid;
+  @include themify($themes) {
+    border-color: themed("openDkSolid");
+    border-top-color: transparent;
+    margin-right: themed('tablePadding');
+  }
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+  -webkit-animation: spin 1s ease-in-out infinite;
+  top: 0px;
+  left: 0px;
+}
+
+@keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
