@@ -1,0 +1,12 @@
+.hideGrid {
+  visibility: hidden;
+  &.loading-table {
+    display: none;
+  }
+}
+div {
+  position: relative;
+  padding: 0px;
+  margin: 0;
+  box-sizing: border-box;
+}
