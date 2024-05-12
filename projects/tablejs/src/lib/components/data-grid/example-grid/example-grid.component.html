@@ -1,0 +1,39 @@
+<label for="filter-input">Filter</label><input name="filter-input" (input)="filterByText($event)" />
+<lib-data-grid
+    [columnConfigs]="testColumnConfigs"
+    [data]="filteredData"
+    [loading]="showLoadingSpinner"
+    [rowIsSelectable]="testData[0]?.type === 'segment'"
+    (onColumnResizeStart)="onColumnResizeStart($event)"
+    (onColumnResize)="onColumnResize($event)"
+    (onColumnResizeEnd)="onColumnResizeEnd($event)"
+    (onColumnReorderStart)="onColumnReorderStart($event)"
+    (onColumnReorder)="onColumnReorder($event)"
+    (onColumnReorderEnd)="onColumnReorderEnd($event)"
+    (onGridInitialized)="onGridInitialized($event)"
+    (onRowClicked)="onRowClicked($event)"
+    (onRangeUpdated)="onRangeUpdated($event)"
+    (onColumnSort)="sortColumnBy($event)"
+>
+    <ng-template #headerRef let-columnIndex="columnIndex" let-config="config" let-sortOptions="config.sortOptions">
+        <span class="left-shift template-header-content"
+            [ngClass]="{ 
+                'no-shift' : !config.reorderable,
+                'template-shift-short' : !config.reorderable && config.sortOptions,
+                'template-shift-extra-short': config.reorderable && config.sortOptions
+            }"
+            >
+            <span class="template-box">TMPL</span>
+            <span class="template-shifted-table-name"
+                
+            >{{ config.name }}</span>
+        </span>
+    </ng-template>
+    <ng-template #checkboxRef let-item="item" let-index="index" let-columnIndex="columnIndex">
+        <input type="checkbox" (click)="gridRowSelected($event, item)"
+            [indeterminate]="item?.indeterminate"
+            [checked]="item?.checked"
+            [disabled]="(item.type === 'element' || item.type === 'attribute') && item?.outputRequired === true"
+        />
+    </ng-template>
+</lib-data-grid>
