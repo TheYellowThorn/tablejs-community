@@ -1,0 +1,262 @@
+/* You can add global styles to this file, and also import other style files */
+$white: #ffffff;
+$ltGray: #f2f2f2;
+$semiLtGray: #e9e9e9;
+$gray: #999999;
+$dkGray: #555555;
+$black: #000000;
+$check-green: #009900;
+$error-red: #bb0022;
+$line-height: 1.1rem;
+
+$colors: (
+	'white': $white,
+	'dkGray': $dkGray,
+	'ltGray': $ltGray,
+	'semitLtGray': $semiLtGray,
+	'gray': $gray,
+	'black': $black,
+	'check-green': $check-green,
+	'error-red': $error-red,
+	'line-height': $line-height
+);
+
+@each $name, $color in $colors {
+  .color-#{$name} {
+     background: $color;
+  }
+}
+
+
+
+$open-reg-blue: #247297;
+$open-dk-blue: #136186;
+$open-lt-blue: #3381a6;
+$open-ultra-lt-blue: #ebf1f6;
+$open-error-blue: #f81313;
+$open-reg-blue-solid: #247297;
+$open-ultra-dk-blue-solid: #014064;
+$open-semi-dk-blue-solid: #025075;
+$open-dk-blue-solid: #136186;
+$open-lt-blue-solid: #3381a6;
+$open-ultra-lt-blue-solid: #ebf1f6;
+$open-error-blue-solid: #f81313;
+
+$open-reg-orange: #d17c32;
+$open-dk-orange: #c06b21;
+$open-lt-orange: #e08b41;
+$open-ultra-lt-orange:  #f0e4db; // #fff3ea;
+$open-error-orange: #f81313;
+$open-reg-orange-solid: #d17c32;
+$open-ultra-dk-orange-solid: #a04900;
+$open-semi-dk-orange-solid: #b05a10;
+$open-dk-orange-solid: #c06b21;
+$open-lt-orange-solid: #e08b41;
+$open-ultra-lt-orange-solid:  #f0e4db; // #fff3ea;
+$open-error-orange-solid: #f81313;
+
+$open-reg-green: #558b2f;
+$open-dk-green: #33691e;
+$open-lt-green: #689f38;
+$open-ultra-lt-green:  #dfecd3; // #fff3ea;
+$open-error-green: #f81313;
+$open-reg-green-solid: #558b2f;
+$open-ultra-dk-green-solid: #11470c;
+$open-semi-dk-green-solid: #22580d;
+$open-dk-green-solid: #33691e;
+$open-lt-green-solid: #689f38;
+$open-ultra-lt-green-solid:  #dfecd3; // #fff3ea;
+$open-error-green-solid: #f81313;
+
+$open-reg-purple: #8b50a7;
+$open-dk-purple: #6f4085;
+$open-lt-purple: #bb76db;
+$open-ultra-lt-purple: #e8e2ee; // #fff3ea;
+$open-error-purple: #f81313;
+$open-reg-purple-solid: #8b50a7;
+$open-ultra-dk-purple-solid: #4d2064;
+$open-semi-dk-purple-solid: #5e3075;
+$open-dk-purple-solid: #6f4085;
+$open-lt-purple-solid: #bb76db;
+$open-ultra-lt-purple-solid: #e8e2ee; // #fff3ea;
+$open-error-purple-solid: #f81313;
+
+$open-reg-slate: #888888;
+$open-dk-slate: #666666;
+$open-lt-slate: #999999;
+$open-ultra-lt-slate: #f2f2f2; // #fff3ea;
+$open-error-slate: #f81313;
+$open-reg-slate-solid: #888888;
+$open-ultra-dk-slate-solid: #444444;
+$open-semi-dk-slate-solid: #555555;
+$open-dk-slate-solid: #666666;
+$open-lt-slate-solid: #cccccc;
+$open-ultra-lt-slate-solid: #f2f2f2; // #fff3ea;
+$open-error-slate-solid: #f81313;
+
+$open-reg: null; // $open-reg-blue !global;
+$open-dk: null; // $open-dk-blue !global;
+$open-lt: null; // $open-lt-blue !global;
+$open-ultra-lt: null; // $open-ultra-lt-blue !global;
+$open-error: null; // $open-error-blue !global;
+$open-reg-solid: null; // $open-reg-blue !global;
+$open-ultra-dk-solid: null; //  $open-ultra-dk-blue !global;
+$open-dk-solid: null; // $open-dk-blue !global;
+$open-lt-solid: null; // $open-lt-blue !global;
+$open-ultra-lt-solid: null; // $open-ultra-lt-blue !global;
+$open-error-solid: null; // $open-error-blue !global;
+
+
+$themes: (
+	extra-sm: (
+		tablePadding: 0.45rem,
+		tablePaddingTop: 0.54rem,
+		tableFontSize: 0.7335rem,
+		editableInputVerticalPadding: 0.07rem,
+		editableVerticalPadding: 0.2rem,
+		editableWidthOffset: calc(100% - 8px)
+	),
+	sm: (
+		tablePadding: 0.475rem,
+		tablePaddingTop: 0.57rem,
+		tableFontSize: 0.774rem,
+		editableHorizontalPadding: 4px,
+		editableInputVerticalPadding: 0.1015rem,
+		editableVerticalPadding: 0.29rem,
+		editableWidthOffset: calc(100% - 8px)
+	),
+	reg: (
+		tablePadding: 0.5rem,
+		tablePaddingTop: 0.6rem,
+		tableFontSize: 0.815rem,
+		editableHorizontalPadding: 4px,
+		editableInputVerticalPadding: 0.1015rem,
+		editableVerticalPadding: 0.29rem,
+		editableWidthOffset: calc(100% - 8px)
+	),
+	lg: (
+		tablePadding: 0.65rem,
+		tablePaddingTop: 0.76rem,
+		tableFontSize: 0.897rem,
+		editableInputVerticalPadding: 0.14rem,
+		editableVerticalPadding: 0.4rem,
+		editableWidthOffset: calc(100% - 10px)
+	),
+	extra-lg: (
+		tablePadding: 0.75rem,
+		tablePaddingTop: 0.87rem,
+		tableFontSize: 0.978rem,
+		editableInputVerticalPadding: 0.14rem,
+		editableVerticalPadding: 0.4rem,
+		editableWidthOffset: calc(100% - 10px)
+	),
+  	blue: (
+		openReg: $open-reg-blue,
+		openDk: $open-dk-blue,
+		openLt: $open-lt-blue,
+		openUltraLt: $open-ultra-lt-blue,
+		openError: $open-error-blue,
+		openRegSolid: $open-reg-blue-solid,
+		openUltraDkSolid: $open-ultra-dk-blue-solid,
+		openSemiDkSolid: $open-semi-dk-blue-solid,
+		openDkSolid: $open-dk-blue-solid,
+		openLtSolid: $open-lt-blue-solid,
+		openUltraLtSolid: $open-ultra-lt-blue-solid,
+		openErrorSolid: $open-error-blue-solid
+  	),
+  	orange: (
+    	openReg: $open-reg-orange,
+		openDk: $open-dk-orange,
+		openLt: $open-lt-orange,
+		openUltraLt: $open-ultra-lt-orange,
+		openError: $open-error-orange,
+		openRegSolid: $open-reg-orange-solid,
+		openUltraDkSolid: $open-ultra-dk-orange-solid,
+		openSemiDkSolid: $open-semi-dk-orange-solid,
+		openDkSolid: $open-dk-orange-solid,
+		openLtSolid: $open-lt-orange-solid,
+		openUltraLtSolid: $open-ultra-lt-orange-solid,
+		openErrorSolid: $open-error-orange-solid
+  	),
+  	green: (
+    	openReg: $open-reg-green,
+		openDk: $open-dk-green,
+		openLt: $open-lt-green,
+		openUltraLt: $open-ultra-lt-green,
+		openError: $open-error-green,
+		openRegSolid: $open-reg-green-solid,
+		openUltraDkSolid: $open-ultra-dk-green-solid,
+		openSemiDkSolid: $open-semi-dk-green-solid,
+		openDkSolid: $open-dk-green-solid,
+		openLtSolid: $open-lt-green-solid,
+		openUltraLtSolid: $open-ultra-lt-green-solid,
+		openErrorSolid: $open-error-green-solid
+  	),
+  	purple: (
+    	openReg: $open-reg-purple,
+		openDk: $open-dk-purple,
+		openLt: $open-lt-purple,
+		openUltraLt: $open-ultra-lt-purple,
+		openError: $open-error-purple,
+		openRegSolid: $open-reg-purple-solid,
+		openUltraDkSolid: $open-ultra-dk-purple-solid,
+		openSemiDkSolid: $open-semi-dk-purple-solid,
+		openDkSolid: $open-dk-purple-solid,
+		openLtSolid: $open-lt-purple-solid,
+		openUltraLtSolid: $open-ultra-lt-purple-solid,
+		openErrorSolid: $open-error-purple-solid
+	),
+	slate: (
+    	openReg: $open-reg-slate,
+		openDk: $open-dk-slate,
+		openLt: $open-lt-slate,
+		openUltraLt: $open-ultra-lt-slate,
+		openError: $open-error-slate,
+		openRegSolid: $open-reg-slate-solid,
+		openUltraDkSolid: $open-ultra-dk-slate-solid,
+		openSemiDkSolid: $open-semi-dk-slate-solid,
+		openDkSolid: $open-dk-slate-solid,
+		openLtSolid: $open-lt-slate-solid,
+		openUltraLtSolid: $open-ultra-lt-slate-solid,
+		openErrorSolid: $open-error-slate-solid
+	)
+);
+
+  
+  /*
+   * Implementation of themes
+   */
+@mixin optional-at-root-nest($sel) {
+	@at-root #{if(not &, $sel, selector-nest($sel, &))} {
+        @content;
+    }
+}
+
+@mixin themify($themes) {
+	@each $theme, $map in $themes {
+		@include optional-at-root-nest('.theme-#{"" + $theme}') {
+			$theme-map: () !global;
+			@each $key, $submap in $map {
+			$value: map-get(map-get($themes, $theme), '#{$key}');
+			$theme-map: map-merge($theme-map, ($key: $value)) !global;
+			}
+			@content;
+			$theme-map: null !global;
+		}
+	}
+}
+
+@function themed($key) {
+	@return map-get($theme-map, $key);
+}
+
+:export {
+	@each $theme, $map in $themes {
+		@each $key, $submap in $map {
+			theme-#{"" + $theme}-#{$key}: map-get(map-get($themes, $theme), '#{$key}')
+		}             
+	}
+	@each $name, $color in $colors {
+		#{$name}: $color            
+	}
+}
