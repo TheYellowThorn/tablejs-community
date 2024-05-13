@@ -1,0 +1,1 @@
+{"version":3,"file":"i-column-reorder-event.d.ts","sourceRoot":"","sources":["../../../../../../projects/tablejs/src/lib/shared/interfaces/events/i-column-reorder-event.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,mBAAmB;IAClC,YAAY,EAAE,GAAG,CAAC;IAClB,aAAa,EAAE,OAAO,CAAC;IACvB,aAAa,EAAE,OAAO,CAAC;IACvB,IAAI,CAAC,EAAE,MAAM,CAAC;CACf"}
