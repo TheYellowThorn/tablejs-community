@@ -5,11 +5,11 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:tablejs": "ng build @transunion-ui/tablejs --configuration development",
+    "build:tablejs": "ng build @tablejs/community --configuration development",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test @transunion-ui/tablejs --watch=false --code-coverage",
-    "test:watch": "ng test @transunion-ui/tablejs --watch=true --code-coverage",
-    "lint": "ng lint @transunion-ui/tablejs"
+    "test": "ng test @tablejs/community --watch=false --code-coverage",
+    "test:watch": "ng test @tablejs/community --watch=true --code-coverage",
+    "lint": "ng lint @tablejs/community"
   },
   "private": true,
   "dependencies": {
@@ -49,7 +49,7 @@
   },
   "description": "Tablejs ========",
   "bugs": {
-    "url": "https://github.com/transunionui/tablejs/issues"
+    "url": "https://github.com/TheYellowThorn/tablejs-community/issues"
   },
   "main": "index.js",
   "keywords": [
@@ -70,8 +70,8 @@
   "author": "Michael Gouwens",
   "repository": {
     "type": "git",
-    "url": "https://github.com/transunion-ui/tablejs"
+    "url": "https://github.com/tablejs/community"
   },
-  "homepage": "https://transunionui.github.io/tablejs/",
+  "homepage": "https://theyellowthorn.github.io/tablejs/",
   "license": "MIT"
 }

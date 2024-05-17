@@ -17,7 +17,7 @@ export class GridRowDirective implements AfterViewInit {
 
   registerRowsOnGridDirective() {
     const el: HTMLElement | any | null = this.gridService.getParentTablejsGridDirective(this.elementRef.nativeElement);
-    if (el !== null) {
+    if (el !== null && el['gridDirective']) {
       el['gridDirective'].addRow(this.elementRef.nativeElement);
     }
   }

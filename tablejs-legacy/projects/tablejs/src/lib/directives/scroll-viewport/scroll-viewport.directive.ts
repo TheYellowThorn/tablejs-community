@@ -1,5 +1,5 @@
 import { AfterViewInit, Directive, ChangeDetectorRef, ContentChild,
-  ElementRef, EmbeddedViewRef, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewRef, OnDestroy, Renderer2, RendererFactory2, ComponentFactoryResolver} from '@angular/core';
+  ElementRef, EmbeddedViewRef, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewRef, OnDestroy, Renderer2, RendererFactory2} from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { GridService } from './../../services/grid/grid.service';
 import { DirectiveRegistrationService } from './../../services/directive-registration/directive-registration.service';
@@ -11,8 +11,7 @@ import { TablejsForOfContext } from './../../directives/virtual-for/virtual-for.
 import { IVirtualNexus } from './../../shared/interfaces/i-virtual-nexus';
 import { OperatingSystemService } from './../../services/operating-system/operating-system.service';
 import { ScrollPrevSpacerComponent } from '../../components/scroll-prev-spacer/scroll-prev-spacer.component';
-import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { Subscription, take } from 'rxjs';
 
 @Directive({
   selector: '[tablejsScrollViewport], [tablejsscrollviewport], [tablejs-scroll-viewport]',
@@ -64,6 +63,8 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
       this._itemLoadLimit = Number(value);
   }
 
+  public timeoutID: any;
+
   items: any[] | null = null;
 
   // Custom Elements Inputs
@@ -92,6 +93,7 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
   public postSpacer: HTMLElement | null = null;
   public gridDirective: GridDirective | null = null;
   public virtualForChangesSubscription$: Subscription;
+  public preGridInitializeSubscription$: Subscription;
   public pauseViewportRenderUpdates: boolean = false;
 
   public range: Range = { startIndex: 0, endIndex: 1, extendedStartIndex: 0, extendedEndIndex: 1 };
@@ -125,6 +127,7 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
   private handleMouseOver: Function | null = null;
   private handleMouseOut: Function | null = null;
   private handleKeyDown: ((e: KeyboardEvent) => void) | null = null;
+  private handleListContentScroll: ((this: HTMLElement, e: Event) => void) | undefined | null;
   private cloneFromTemplateRef: boolean = false;
   private viewportHasScrolled: boolean = false;
   private templateContext: TablejsForOfContext<any, any> | null = null;
@@ -141,7 +144,6 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
     private directiveRegistrationService: DirectiveRegistrationService,
     private scrollDispatcherService: ScrollDispatcherService,
     private operatingSystem: OperatingSystemService,
-    private componentFactoryResolver: ComponentFactoryResolver,
     private cdr: ChangeDetectorRef | null,
     private rendererFactory: RendererFactory2
   ) {
@@ -265,10 +267,10 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
 
     this.directiveRegistrationService.registerViewportOnGridDirective(this.listContent);
 
-    const compFactory = this.componentFactoryResolver.resolveComponentFactory(ScrollPrevSpacerComponent);
-    const componentRef = this.virtualNexus!.virtualForDirective._viewContainer.createComponent<ScrollPrevSpacerComponent>(compFactory, null, this.virtualNexus!.virtualForDirective._viewContainer.injector);
-    this.virtualNexus!.virtualForDirective._viewContainer.detach(0);
-    const ref: EmbeddedViewRef<any> = this.virtualNexus!.virtualForDirective._viewContainer.createEmbeddedView(componentRef.instance.template, undefined, 0);
+    const componentRef = this.virtualNexus!.virtualForDirective!._viewContainer.createComponent<ScrollPrevSpacerComponent>(ScrollPrevSpacerComponent);
+    this.virtualNexus!.virtualForDirective!._viewContainer.detach(0);
+    const ref: EmbeddedViewRef<any> = this.virtualNexus!.virtualForDirective!._viewContainer.createEmbeddedView(componentRef.instance.template, undefined, 0);
+    componentRef.destroy();
     this.prevSpacer = ref.rootNodes[0];
 
     this.postSpacer = document.createElement('tr');
@@ -279,7 +281,7 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
   }
 
   private addScrollHandler(): void {
-    this.listContent!.addEventListener('scroll', (e) => {
+    this.listContent!.addEventListener('scroll', this.handleListContentScroll = (e: any) => {
       this.handleScroll(e);
     });
   }
@@ -296,16 +298,16 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
     }
 
     const indexMap: any = {};
-    for (let i = 1; i < this.virtualNexus!.virtualForDirective._viewContainer.length; i++) {
-      indexMap[(this.virtualNexus!.virtualForDirective._viewContainer.get(i) as EmbeddedViewRef<any>).rootNodes[0].index] = i;
+    for (let i = 1; i < this.virtualNexus!.virtualForDirective!._viewContainer.length; i++) {
+      indexMap[(this.virtualNexus!.virtualForDirective!._viewContainer.get(i) as EmbeddedViewRef<any>).rootNodes[0].index] = i;
     };
-    const detachedRef: ViewRef | null = this.virtualNexus!.virtualForDirective._viewContainer.detach(indexMap[index]);
+    const detachedRef: ViewRef | null = this.virtualNexus!.virtualForDirective!._viewContainer.detach(indexMap[index]);
     const child: HTMLElement = (detachedRef as EmbeddedViewRef<any>).rootNodes[0];
     detachedRef!.destroy();
     
-    this.templateContext = new TablejsForOfContext<any, any>(this.items![index], this.virtualNexus!.virtualForDirective._tablejsForOf, index, this.items!.length);
-    const ref: EmbeddedViewRef<any> = this.virtualNexus!.virtualForDirective._viewContainer.createEmbeddedView(this.virtualNexus!.virtualForDirective._template, this.templateContext, indexMap[index]);
-    this.virtualNexus!.virtualForDirective._viewContainer.move(ref, indexMap[index]);
+    this.templateContext = new TablejsForOfContext<any, any>(this.items![index], this.virtualNexus!.virtualForDirective!._tablejsForOf, index, this.items!.length);
+    const ref: EmbeddedViewRef<any> = this.virtualNexus!.virtualForDirective!._viewContainer.createEmbeddedView(this.virtualNexus!.virtualForDirective!._template!, this.templateContext, indexMap[index]);
+    this.virtualNexus!.virtualForDirective!._viewContainer.move(ref, indexMap[index]);
     let clone: any = ref.rootNodes[0];
     clone.index = index;
     this.cdr!.detectChanges();
@@ -357,12 +359,10 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
       });
     }
 
-    // this.convertCustomElementsVariables();
     this.createTBodies();
     this.addScrollHandler();
-    // this.attachMutationObserver();
 
-    if (this.items && (this.generateCloneMethod || this.virtualNexus.virtualForDirective._template)) {
+    if (this.items && (this.generateCloneMethod || this.virtualNexus.virtualForDirective!._template)) {
       this.initScroll({
         items: this.items,
         generateCloneMethod: this._cloneMethod!
@@ -407,6 +407,7 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
     this.elementRef.nativeElement.addEventListener('mouseenter', this.handleMouseOver = (e: MouseEvent) => {
       this.mouseIsOverViewport = true;
     });
+    
     this.elementRef.nativeElement.addEventListener('mouseleave', this.handleMouseOut = (e: MouseEvent) => {
       this.mouseIsOverViewport = false;
     });
@@ -471,7 +472,7 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
     this.gridDirective = (this.gridService.getParentTablejsGridDirective(this.elementRef.nativeElement)! as any)['gridDirective'];
     this.gridDirective!.scrollViewportDirective = this;
 
-    this.gridDirective!.preGridInitialize.pipe(take(1)).subscribe(res => {
+    this.preGridInitializeSubscription$ = this.gridDirective!.preGridInitialize.pipe(take(1)).subscribe(res => {
       this.cdr!.detectChanges();
       this.refreshContainerHeight();
 
@@ -492,12 +493,37 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
   }
 
   public ngOnDestroy() {
+    this.listElm = null;
+    this.virtualNexus!.virtualForDirective!._viewContainer.detach(0);
+    this.virtualNexus!.virtualForDirective!._viewContainer.clear();
+    this.items = [];
+    this.elementRef.nativeElement.scrollViewport = null;
+    this.templateRef = null;
+    this._cloneMethod = null;
+    this.generateCloneMethod = null;
+    if (this.virtualNexus) {
+      this.directiveRegistrationService.clearVirtualNexus(this.virtualNexus);
+      this.virtualNexus.virtualForDirective = null;
+      this.virtualNexus.scrollViewportDirective = null;
+      this.virtualNexus = null;
+    }
+    
+    clearTimeout(this.timeoutID);
     this.elementRef.nativeElement.removeEventListener('mouseenter', this.handleMouseOver);
     this.elementRef.nativeElement.removeEventListener('mouseleave', this.handleMouseOut);
+    
+    if (this.listContent) {
+      this.listContent.removeEventListener('scroll', this.handleListContentScroll!);
+    }
+    this.handleListContentScroll = null;
     document.removeEventListener('keydown', this.handleKeyDown!);
     if (this.virtualForChangesSubscription$) {
       this.virtualForChangesSubscription$.unsubscribe();
     }
+    if (this.preGridInitializeSubscription$) {
+      this.preGridInitializeSubscription$.unsubscribe();
+    }
+    this.elementRef.nativeElement.scrollViewportDirective = null;
   }
 
   private setScrollSpacers(): void {
@@ -534,13 +560,13 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
   private removePreScrollItems(lastIndex: number, index: number) {
     if (lastIndex < index) {
       for (let i = lastIndex; i < index; i++) {
-        const firstRef: ViewRef | null = this.virtualNexus!.virtualForDirective._viewContainer.get(1);
+        const firstRef: ViewRef | null = this.virtualNexus!.virtualForDirective!._viewContainer.get(1);
         if (firstRef) {
           const firstChild = (firstRef as EmbeddedViewRef<any>).rootNodes[0];
           const itemName = 'item' + i;
           this.itemVisibilityLookup[itemName] = false;
   
-          const detachedRef: ViewRef | null = this.virtualNexus!.virtualForDirective._viewContainer.detach(1);
+          const detachedRef: ViewRef | null = this.virtualNexus!.virtualForDirective!._viewContainer.detach(1);
           detachedRef!.destroy();
           this.cdr!.detectChanges();
 
@@ -562,7 +588,7 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
         const itemName = 'item' + i;
         this.itemVisibilityLookup[itemName] = false;
 
-        const detachedRef: ViewRef | null = this.virtualNexus!.virtualForDirective._viewContainer.detach(this.virtualNexus!.virtualForDirective._viewContainer.length - 1);
+        const detachedRef: ViewRef | null = this.virtualNexus!.virtualForDirective!._viewContainer.detach(this.virtualNexus!.virtualForDirective!._viewContainer.length - 1);
         detachedRef!.destroy();
         this.cdr!.detectChanges();
 
@@ -577,8 +603,8 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
     if (this.pauseViewportRenderUpdates) {
       return;
     }
-    for (let i = this.virtualNexus!.virtualForDirective._viewContainer.length - 1; i > 0; i--) {
-      const detachedRef: ViewRef | null = this.virtualNexus!.virtualForDirective._viewContainer.detach(i);
+    for (let i = this.virtualNexus!.virtualForDirective!._viewContainer.length - 1; i > 0; i--) {
+      const detachedRef: ViewRef | null = this.virtualNexus!.virtualForDirective!._viewContainer.detach(i);
       detachedRef!.destroy();
     }
     this.cdr!.detectChanges();
@@ -586,7 +612,7 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
     this.resetToInitialValues();
     this.items = items;
     if (this.virtualNexus) {
-      this.virtualNexus.virtualForDirective._tablejsForOf = items;
+      this.virtualNexus.virtualForDirective!._tablejsForOf = items;
     }
 
     if (scrollToOptions.index !== -1) {
@@ -625,10 +651,10 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
   public recalculateRowHeight(index: number): void {
     const itemName: string = 'item' + index;
     const indexMap: any = {};
-    for (let i = 1; i < this.virtualNexus!.virtualForDirective._viewContainer.length; i++) {
-      indexMap[(this.virtualNexus!.virtualForDirective._viewContainer.get(i) as EmbeddedViewRef<any>).rootNodes[0].index] = i;
+    for (let i = 1; i < this.virtualNexus!.virtualForDirective!._viewContainer.length; i++) {
+      indexMap[(this.virtualNexus!.virtualForDirective!._viewContainer.get(i) as EmbeddedViewRef<any>).rootNodes[0].index] = i;
     };
-    const rowRef: EmbeddedViewRef<any> = this.virtualNexus!.virtualForDirective._viewContainer.get(indexMap[index]) as EmbeddedViewRef<any>;
+    const rowRef: EmbeddedViewRef<any> = this.virtualNexus!.virtualForDirective!._viewContainer.get(indexMap[index]) as EmbeddedViewRef<any>;
     const rowEl: HTMLElement | any = rowRef.rootNodes[0];
 
     const lookupHeight: number = rowEl.offsetHeight;
@@ -806,8 +832,8 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
   public getCloneFromTemplateRef(index: number): HTMLElement {
     let clone: HTMLElement;
 
-    this.templateContext = new TablejsForOfContext<any, any>(this.items![index], this.virtualNexus!.virtualForDirective._tablejsForOf, index, this.items!.length);
-    const viewRef = this.virtualNexus!.virtualForDirective._template.createEmbeddedView(this.templateContext);
+    this.templateContext = new TablejsForOfContext<any, any>(this.items![index], this.virtualNexus!.virtualForDirective!._tablejsForOf, index, this.items!.length);
+    const viewRef = this.virtualNexus!.virtualForDirective!._template!.createEmbeddedView(this.templateContext);
     viewRef.detectChanges();
     clone = viewRef.rootNodes[0];
 
@@ -827,7 +853,7 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
     let itemsToBatch: any[] = [];
     let itemBefore: Node;
     let indexBefore: number;
-    const firstRef: ViewRef | null = this.virtualNexus!.virtualForDirective._viewContainer.get(1);
+    const firstRef: ViewRef | null = this.virtualNexus!.virtualForDirective!._viewContainer.get(1);
     const appendToEnd: boolean = firstRef === null;
     for (let i = this.adjustedStartIndex!; i < this.adjustedStartIndex! + Number(this.itemLoadLimit); i++) {
       if (i < 0) {
@@ -844,13 +870,13 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
       if (itemIsInvisible) {
         itemBefore = !scrollingUp ? this.postSpacer : firstEl;
 
-        indexBefore = !scrollingUp || appendToEnd ? this.virtualNexus!.virtualForDirective._viewContainer.length : this.virtualNexus!.virtualForDirective._viewContainer.indexOf(firstRef!);
+        indexBefore = !scrollingUp || appendToEnd ? this.virtualNexus!.virtualForDirective!._viewContainer.length : this.virtualNexus!.virtualForDirective!._viewContainer.indexOf(firstRef!);
 
         this.itemVisibilityLookup[this.itemName] = true;
 
-        this.templateContext = new TablejsForOfContext<any, any>(this.items![i], this.virtualNexus!.virtualForDirective._tablejsForOf, i, this.items!.length);
-        const ref: EmbeddedViewRef<any> = this.virtualNexus!.virtualForDirective._viewContainer.createEmbeddedView(this.virtualNexus!.virtualForDirective._template, this.templateContext, indexBefore);
-        this.virtualNexus!.virtualForDirective._viewContainer.move(ref, indexBefore);
+        this.templateContext = new TablejsForOfContext<any, any>(this.items![i], this.virtualNexus!.virtualForDirective!._tablejsForOf, i, this.items!.length);
+        const ref: EmbeddedViewRef<any> = this.virtualNexus!.virtualForDirective!._viewContainer.createEmbeddedView(this.virtualNexus!.virtualForDirective!._template!, this.templateContext, indexBefore);
+        this.virtualNexus!.virtualForDirective!._viewContainer.move(ref, indexBefore);
 
         const prev: any = ref.rootNodes[0];
         prev.index = i;
@@ -962,9 +988,9 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
 
           this.itemVisibilityLookup[this.itemName] = true;
 
-          this.templateContext = new TablejsForOfContext<any, any>(this.items![i], this.virtualNexus!.virtualForDirective._tablejsForOf, i, this.items!.length);
-          const ref: EmbeddedViewRef<any> = this.virtualNexus!.virtualForDirective._viewContainer.createEmbeddedView(this.virtualNexus!.virtualForDirective._template, this.templateContext, 1);
-          this.virtualNexus!.virtualForDirective._viewContainer.move(ref, 1);
+          this.templateContext = new TablejsForOfContext<any, any>(this.items![i], this.virtualNexus!.virtualForDirective!._tablejsForOf, i, this.items!.length);
+          const ref: EmbeddedViewRef<any> = this.virtualNexus!.virtualForDirective!._viewContainer.createEmbeddedView(this.virtualNexus!.virtualForDirective!._template!, this.templateContext, 1);
+          this.virtualNexus!.virtualForDirective!._viewContainer.move(ref, 1);
           const prev: any = ref.rootNodes[0];
           prev.index = i;
           this.cdr!.detectChanges();
@@ -1036,7 +1062,7 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
           itemsToBatch = [];
         }
 
-        if (this.preItemOverflowCount >= this.preItemOverflow) {
+        if (this.preItemOverflowCount >= Number(this.preItemOverflow)) {
           break;
         }
       }
@@ -1174,8 +1200,9 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
     const itemsAreEmpty: boolean = this.items.length === 0;
     let index = options.initialIndex ? options.initialIndex : 0;
 
-    if (this.virtualNexus && this.virtualNexus.virtualForDirective._template) {
-      setTimeout(() => {
+    if (this.virtualNexus && this.virtualNexus.virtualForDirective!._template) {
+      clearTimeout(this.timeoutID);
+      this.timeoutID = setTimeout(() => {
         this.cloneFromTemplateRef = true;
         this.verifyViewportIsReady();
         this.initFirstScroll(index);
@@ -1205,7 +1232,7 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
     if (itemsAreEmpty) {
       this.items!.push(this.placeholderObject);
       this.scrollToExact(index, 0);
-      const node: HTMLElement = (this.virtualNexus!.virtualForDirective._viewContainer.get(1) as EmbeddedViewRef<any>).rootNodes[0];
+      const node: HTMLElement = (this.virtualNexus!.virtualForDirective!._viewContainer.get(1) as EmbeddedViewRef<any>).rootNodes[0];
       this.renderer!.setStyle(node, 'height', '0px');
       this.renderer!.setStyle(node, 'minHeight', '0px');
       this.renderer!.setStyle(node, 'overflow', 'hidden');
@@ -1222,7 +1249,7 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
     return !!this._cloneMethod;
   }
   private templateIsSet(): boolean {
-    return this.virtualNexus!.virtualForDirective._template !== undefined && this.virtualNexus!.virtualForDirective._template !== null;
+    return this.virtualNexus!.virtualForDirective!._template !== undefined && this.virtualNexus!.virtualForDirective!._template !== null;
   }
 
 }

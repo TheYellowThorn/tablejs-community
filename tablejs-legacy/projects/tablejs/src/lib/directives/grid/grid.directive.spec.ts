@@ -51,23 +51,23 @@ const dummyElement = document.createElement('div');
 
 export class MockElementRef extends ElementRef {
 
-  nativeElement: HTMLElement = dummyElement;
+  override nativeElement: HTMLElement = dummyElement;
   constructor() {
     super(dummyElement);
   }
 }
 
 export class MockScrollViewportDirective extends ScrollViewportDirective {
-  registerCustomElementsInputs: (viewport) => true;
-  ngOnInit: () => true;
-  ngAfterViewInit =  () => {
+  override registerCustomElementsInputs: (viewport) => true;
+  override ngOnInit: () => true;
+  override ngAfterViewInit =  () => {
     return true;
   };
 }
 
 export class MockVirtualForDirective extends VirtualForDirective<any, any> {
-  constructor(public _viewContainer: ViewContainerRef,
-    public _template: TemplateRef<TablejsForOfContext<any, any>>,
+  constructor(public override _viewContainer: ViewContainerRef,
+    public override _template: TemplateRef<TablejsForOfContext<any, any>>,
     _differs: IterableDiffers,
     elementRef: ElementRef,
     directiveRegistrationService: DirectiveRegistrationService) {
@@ -79,7 +79,7 @@ export interface Type<T> extends Function {
   new(...args: any[]): T;
 }
 
-export abstract class MockViewContainerRef extends ViewContainerRef {
+export abstract class MockViewContainerRef {
 
   get element(): ElementRef<any> {
     return new MockElementRef();
@@ -99,31 +99,11 @@ export abstract class MockViewContainerRef extends ViewContainerRef {
   get length(): number {
     throw new Error('Method not implemented.');
   }
-  createEmbeddedView<C>(templateRef: TemplateRef<C>, context?: C, index?: number): EmbeddedViewRef<C> {
-    throw new Error('Method not implemented.');
+  createEmbeddedView<C>(templateRef: TemplateRef<C>, context?: C, index?: number): EmbeddedViewRef<C> | null {
+    return null;
   }
-  createComponent<C>(
-    componentType: Type<C>,
-    options?: {
-    index?: number,
-    injector?: Injector,
-    ngModuleRef?: NgModuleRef<unknown>,
-    projectableNodes?: Node[][],
-  }): ComponentRef<C>;
-  createComponent<C>(
-    componentFactory: ComponentFactory<C>, index?: number|undefined,
-    injector?: Injector|undefined, projectableNodes?: any[][]|undefined,
-    ngModuleRef?: NgModuleRef<any>|undefined): ComponentRef<C>;
-  createComponent<C>(
-    componentFactoryOrType: ComponentFactory<C>|Type<C>, indexOrOptions?: number|undefined|{
-      index?: number,
-      injector?: Injector,
-      ngModuleRef?: NgModuleRef<unknown>,
-      projectableNodes?: Node[][],
-    },
-    injector?: Injector|undefined, projectableNodes?: any[][]|undefined,
-    ngModuleRef?: NgModuleRef<any>|undefined): ComponentRef<C> {
-      throw new Error('Method not implemented.');
+  createComponent<C>(componentFactory: ComponentFactory<C>, index?: number, injector?: Injector, projectableNodes?: any[][], ngModule?: NgModuleRef<any>): ComponentRef<C> | null {
+    return null;
   }
 
   insert(viewRef: ViewRef, index?: number): ViewRef {
@@ -202,6 +182,7 @@ describe('GridDirective', () => {
       providers: [
         GridDirective,
         GridService,
+        ComponentFactoryResolver,
         MockDocument,
         MockElementRef,
         TemplateRef,
@@ -238,7 +219,6 @@ describe('GridDirective', () => {
       directiveRegistrationService,
       directive['scrollDispatcherService'],
       directive['operatingSystem'],
-      directive['componentFactoryResolver'],
       null,
       directive['rendererFactory']
     );
@@ -275,28 +255,25 @@ describe('GridDirective', () => {
   });
 
   describe('updateMutations()', () => {
-    it('should register node', async () => {
-      await fixture.whenStable();
+    it('should register node', () => {
       const spy = spyOn(directive['directiveRegistrationService'], 'registerNodeAttributes');
       const div = document.createElement('div');
       const mutation: MutationRecord = getMutationObject('childList', singleNode(div));
-      await directive['updateMutations'](mutation);
+      directive['updateMutations'](mutation);
       expect(spy).toHaveBeenCalledWith(div);
     });
-    it('should register the children of the node', async () => {
-      await fixture.whenStable();
+    it('should register the children of the node', () => {
       const spy = spyOn<any>(directive, 'getChildNodes').and.callThrough();
       const div = document.createElement('div');
       const mutation: MutationRecord = getMutationObject('childList', singleNode(div));
-      await directive['updateMutations'](mutation);
+      directive['updateMutations'](mutation);
       expect(spy).toHaveBeenCalledWith(div);
     });
-    it('should not register the node if the mutation type is not childList', async () => {
-      await fixture.whenStable();
+    it('should not register the node if the mutation type is not childList', () => {
       const spy = spyOn(directive['directiveRegistrationService'], 'registerNodeAttributes');
       const div = document.createElement('div');
       const mutation: MutationRecord = getMutationObject('not-childList', singleNode(div));
-      await directive['updateMutations'](mutation);
+      directive['updateMutations'](mutation);
       expect(spy).not.toHaveBeenCalled();
     });
   });
@@ -535,237 +512,237 @@ describe('GridDirective', () => {
     });
   });
 
-  describe('setParentGroups()', () => {
+  // describe('setParentGroups()', () => {
 
-  });
+  // });
 
-  describe('checkForGridInitReady()', () => {
+  // describe('checkForGridInitReady()', () => {
 
-  });
+  // });
 
-  describe('awaitWidths()', () => {
+  // describe('awaitWidths()', () => {
 
-  });
+  // });
 
-  describe('awaitSingleFrame()', () => {
+  // describe('awaitSingleFrame()', () => {
 
-  });
+  // });
 
-  describe('onPointerDown()', () => {
+  // describe('onPointerDown()', () => {
 
-  });
+  // });
 
-  describe('copyColumnToJPeg()', () => {
+  // describe('copyColumnToJPeg()', () => {
 
-  });
+  // });
 
-  describe('getContainerScrollCount()', () => {
+  // describe('getContainerScrollCount()', () => {
 
-  });
+  // });
 
-  describe('onPointerMove()', () => {
+  // describe('onPointerMove()', () => {
 
-  });
+  // });
 
-  describe('updateWidths()', () => {
+  // describe('updateWidths()', () => {
 
-  });
+  // });
 
-  describe('generateWidthStyle()', () => {
+  // describe('generateWidthStyle()', () => {
 
-  });
+  // });
 
-  describe('getResizableClasses()', () => {
+  // describe('getResizableClasses()', () => {
 
-  });
+  // });
 
-  describe('setResizableStyles()', () => {
+  // describe('setResizableStyles()', () => {
 
-  });
+  // });
 
-  describe('addStyle()', () => {
+  // describe('addStyle()', () => {
 
-  });
+  // });
 
-  describe('setStyleContent()', () => {
+  // describe('setStyleContent()', () => {
 
-  });
+  // });
 
-  describe('moveStyleContentToProminent()', () => {
+  // describe('moveStyleContentToProminent()', () => {
 
-  });
+  // });
 
-  describe('setReorderStyles()', () => {
+  // describe('setReorderStyles()', () => {
 
-  });
+  // });
 
-  describe('getColSpan()', () => {
+  // describe('getColSpan()', () => {
 
-  });
+  // });
 
-  describe('validateColumnSpansAreTheSame()', () => {
+  // describe('validateColumnSpansAreTheSame()', () => {
 
-  });
+  // });
 
-  describe('onPointerUp()', () => {
+  // describe('onPointerUp()', () => {
 
-  });
+  // });
 
-  describe('addPointerListeners()', () => {
+  // describe('addPointerListeners()', () => {
 
-  });
+  // });
 
-  describe('removePointerListeners()', () => {
+  // describe('removePointerListeners()', () => {
 
-  });
+  // });
 
-  describe('endDrag()', () => {
+  // describe('endDrag()', () => {
 
-  });
+  // });
 
-  describe('initGrid()', () => {
+  // describe('initGrid()', () => {
 
-  });
+  // });
 
-  describe('calculateWidthsFromStyles()', () => {
+  // describe('calculateWidthsFromStyles()', () => {
 
-  });
+  // });
 
-  describe('emitGridInitialization()', () => {
+  // describe('emitGridInitialization()', () => {
 
-  });
+  // });
 
-  describe('createDragAndDropComponent()', () => {
+  // describe('createDragAndDropComponent()', () => {
 
-  });
+  // });
 
-  describe('setDragAndDropPosition()', () => {
+  // describe('setDragAndDropPosition()', () => {
 
-  });
+  // });
 
-  describe('setDragAndDropHTML()', () => {
+  // describe('setDragAndDropHTML()', () => {
 
-  });
+  // });
 
-  describe('removeDragAndDropComponent()', () => {
+  // describe('removeDragAndDropComponent()', () => {
 
-  });
+  // });
 
-  describe('generateColumnGroups()', () => {
+  // describe('generateColumnGroups()', () => {
 
-  });
+  // });
 
-  describe('generateSubGroup()', () => {
+  // describe('generateSubGroup()', () => {
 
-  });
+  // });
 
-  describe('orderSubGroups()', () => {
+  // describe('orderSubGroups()', () => {
 
-  });
+  // });
 
-  describe('setGridOrder()', () => {
+  // describe('setGridOrder()', () => {
 
-  });
+  // });
 
-  describe('getOffset()', () => {
+  // describe('getOffset()', () => {
 
-  });
+  // });
 
-  describe('getParentTablejsGridDirective()', () => {
+  // describe('getParentTablejsGridDirective()', () => {
 
-  });
+  // });
 
-  describe('elementRefUnderPoint()', () => {
+  // describe('elementRefUnderPoint()', () => {
 
-  });
+  // });
 
-  describe('getReorderColsUnderPoint()', () => {
+  // describe('getReorderColsUnderPoint()', () => {
 
-  });
+  // });
 
-  describe('getReorderHandlesUnderPoint()', () => {
+  // describe('getReorderHandlesUnderPoint()', () => {
 
-  });
+  // });
 
-  describe('getResizableElements()', () => {
+  // describe('getResizableElements()', () => {
 
-  });
+  // });
 
-  describe('removeHighlights()', () => {
+  // describe('removeHighlights()', () => {
 
-  });
+  // });
 
-  describe('removeElementHighlight()', () => {
+  // describe('removeElementHighlight()', () => {
 
-  });
+  // });
 
-  describe('reorderColumns()', () => {
+  // describe('reorderColumns()', () => {
 
-  });
+  // });
 
-  describe('constructGridTemplateColumns()', () => {
+  // describe('constructGridTemplateColumns()', () => {
 
-  });
+  // });
 
-  describe('setReorderHighlightHeight()', () => {
+  // describe('setReorderHighlightHeight()', () => {
 
-  });
+  // });
 
-  describe('generateContainerID()', () => {
+  // describe('generateContainerID()', () => {
 
-  });
+  // });
 
-  describe('generateViewportID()', () => {
+  // describe('generateViewportID()', () => {
 
-  });
+  // });
 
-  describe('attachContentResizeSensor()', () => {
+  // describe('attachContentResizeSensor()', () => {
 
-  });
+  // });
 
-  describe('setScrollbarAdjustmentStyle()', () => {
+  // describe('setScrollbarAdjustmentStyle()', () => {
 
-  });
+  // });
 
-  describe('clearSelection()', () => {
+  // describe('clearSelection()', () => {
 
-  });
+  // });
 
-  describe('addResizableGrip()', () => {
+  // describe('addResizableGrip()', () => {
 
-  });
+  // });
 
-  describe('addResizableColumn()', () => {
+  // describe('addResizableColumn()', () => {
 
-  });
+  // });
 
-  describe('addReorderGrip()', () => {
+  // describe('addReorderGrip()', () => {
 
-  });
+  // });
 
-  describe('addReorderableColumn()', () => {
+  // describe('addReorderableColumn()', () => {
 
-  });
+  // });
 
-  describe('addColumnsWithDataClasses()', () => {
+  // describe('addColumnsWithDataClasses()', () => {
 
-  });
+  // });
 
-  describe('addRow()', () => {
+  // describe('addRow()', () => {
 
-  });
+  // });
 
-  describe('addInfiniteScrollViewport()', () => {
+  // describe('addInfiniteScrollViewport()', () => {
 
-  });
+  // });
 
-  describe('removeStylesFromHead()', () => {
+  // describe('removeStylesFromHead()', () => {
 
-  });
+  // });
 
-  describe('ngOnDestroy()', () => {
+  // describe('ngOnDestroy()', () => {
 
-  });
+  // });
 
 
 });

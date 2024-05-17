@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "@transunion-ui/tablejs": {
+    "@tablejs/community": {
       "projectType": "library",
       "root": "projects/tablejs",
       "sourceRoot": "projects/tablejs/src",
@@ -41,7 +41,7 @@
       }
     }
   },
-  "defaultProject": "@transunion-ui/tablejs",
+  "defaultProject": "@tablejs/community",
   "cli": {
     "defaultCollection": "@angular-eslint/schematics"
   }

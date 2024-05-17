@@ -60,6 +60,7 @@ export declare class ScrollViewportDirective implements AfterViewInit, OnDestroy
     postSpacer: HTMLElement | null;
     gridDirective: GridDirective | null;
     virtualForChangesSubscription$: Subscription;
+    preGridInitializeSubscription$: Subscription;
     pauseViewportRenderUpdates: boolean;
     range: Range;
     lastRange: Range;

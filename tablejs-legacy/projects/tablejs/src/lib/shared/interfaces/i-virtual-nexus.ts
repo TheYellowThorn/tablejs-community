@@ -2,6 +2,6 @@ import { ScrollViewportDirective } from './../../directives/scroll-viewport/scro
 import { VirtualForDirective } from './../../directives/virtual-for/virtual-for.directive';
 
 export interface IVirtualNexus {
-  scrollViewportDirective: ScrollViewportDirective;
-  virtualForDirective: VirtualForDirective<any, any>;
+  scrollViewportDirective: ScrollViewportDirective | null;
+  virtualForDirective: VirtualForDirective<any, any> | null;
 }

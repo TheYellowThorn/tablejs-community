@@ -52,7 +52,7 @@ class TablejsTestWrapperNoLinkComponent {
 }
 
 export class MockElementRef extends ElementRef {
-  nativeElement: {
+  override nativeElement: {
     children: null,
     innerText: '',
     contains: () => false,

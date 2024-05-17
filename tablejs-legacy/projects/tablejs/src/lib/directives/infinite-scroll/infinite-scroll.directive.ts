@@ -17,7 +17,7 @@ export class InfiniteScrollDirective implements AfterViewInit {
 
   registerColumnOnGridDirective() {
     const el: HTMLElement | any | null = this.gridService.getParentTablejsGridDirective(this.elementRef.nativeElement);
-    if (el !== null) {
+    if (el !== null && el['gridDirective']) {
       el['gridDirective'].addInfiniteScrollViewport(this.elementRef.nativeElement);
     }
   }

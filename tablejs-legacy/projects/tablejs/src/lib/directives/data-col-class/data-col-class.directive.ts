@@ -1,13 +1,15 @@
-import { AfterViewInit, Directive, ElementRef, Input } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Input, OnDestroy } from '@angular/core';
 import { GridService } from './../../services/grid/grid.service';
 
 @Directive({
   selector: '[tablejsDataColClass], [tablejsdatacolclass], [tablejs-data-col-class]'
 })
-export class DataColClassDirective implements AfterViewInit {
+export class DataColClassDirective implements AfterViewInit, OnDestroy {
 
   @Input() tablejsDataColClass: string | undefined | null = '';
   @Input() initialWidth: string | undefined | null;
+
+  public timeoutID: any;
 
   constructor(public elementRef: ElementRef, public gridService: GridService) { }
 
@@ -27,7 +29,8 @@ export class DataColClassDirective implements AfterViewInit {
     } else {
       throw Error('A class name must be supplied to the tablejsDataColClass directive.');
     }
-    setTimeout(() => {
+    clearTimeout(this.timeoutID);
+    this.timeoutID = setTimeout(() => {
       this.registerInitialColumnWidthOnGridDirective();
     }, 1);
   }
@@ -41,8 +44,12 @@ export class DataColClassDirective implements AfterViewInit {
 
     this.gridService.triggerHasInitialWidths(true);
     const el: HTMLElement | any | null = this.gridService.getParentTablejsGridDirective(this.elementRef.nativeElement);
-    if (el !== null) {
+    if (el !== null && el['gridDirective']) {
       el['gridDirective'].initialWidths[this.tablejsDataColClass!] = this.initialWidth;
     }
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.timeoutID);
   }
 }

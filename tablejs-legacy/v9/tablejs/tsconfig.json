@@ -16,9 +16,9 @@
       "dom"
     ],
     "paths": {
-      "@transunion-ui/tablejs": [
-        "dist/transunion-ui/tablejs/transunion-ui-tablejs",
-        "dist/transunion-ui/tablejs"
+      "@tablejs/community": [
+        "dist/tablejs/community/tablejs-community",
+        "dist/tablejs/community"
       ]
     }
   },

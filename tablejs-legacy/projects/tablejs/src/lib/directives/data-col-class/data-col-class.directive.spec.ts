@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 
 export class MockElementRef extends ElementRef {
 
-  nativeElement: any = {
+  override nativeElement: any = {
     classList: {
       add: (item: string) => true
     },

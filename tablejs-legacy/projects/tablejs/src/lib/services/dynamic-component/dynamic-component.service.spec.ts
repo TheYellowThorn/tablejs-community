@@ -13,11 +13,11 @@ describe('DynamicComponentService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('createComponent()', () => {
+  // describe('createComponent()', () => {
     // it('should call resolveComponentFactory()', () => {
       // const vcr: ViewContainerRef = { createComponent: (factory) => true } as ViewContainerRef;
       // service.createComponent(vcr, 'Foo');
       // expect()
     // });
-  });
+  // });
 });

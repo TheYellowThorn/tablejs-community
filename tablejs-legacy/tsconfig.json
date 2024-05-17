@@ -18,11 +18,11 @@
       "dom"
     ],
     "paths": {
-      "@transunion-ui/tablejs": [
-        "dist/@transunion-ui/tablejs"
+      "@tablejs/community": [
+        "dist/@tablejs/community"
       ],
-      "@transunion-ui/tablejs/*": [
-        "dist/@transunion-ui/tablejs/*"
+      "@tablejs/community/*": [
+        "dist/@tablejs/community/*"
       ]
     }
   }

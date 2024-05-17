@@ -4,12 +4,12 @@ Tablejs
 
 Tablejs is an open-source solution for displaying complex grid content in Angular.   Tablejs provides **high performance** grids supporting millions of rows of content and enables **easy integration** into familiar HTML, CSS, and Javascript concepts.  Look below for an example of a grid with several features enabled.
 
-![Grid Example](https://github.com/transunion-ui/tablejs/blob/master/readmes/grid.png?raw=)
+![Grid Example](https://github.com/tablejs/community/blob/master/readmes/grid.png?raw=)
 
-Please visit our [GitHub](https://github.com/transunion-ui/tablejs) for more resources:<br/>
-[Demo](https://transunionui.github.io/tablejs/demo/)<br/>
-[API Documentation](https://transunionui.github.io/tablejs/api/)<br/>
-[Examples](https://transunionui.github.io/tablejs/examples/)
+Please visit our [GitHub](https://github.com/tablejs/community) for more resources:<br/>
+[Demo](https://theyellowthorn.github.io/tablejs/demo/)<br/>
+[API Documentation](https://theyellowthorn.github.io/tablejs/api/)<br/>
+[Examples](https://theyellowthorn.github.io/tablejs/examples/)
 
 
 Instructions for using Tablejs.
@@ -40,13 +40,13 @@ Usage
 ### How to Install
 
 ```
-npm install --save @transunion-ui/tablejs
+npm install --save @tablejs/community
 ```
 
 ### Import Module
 
 ```javascript
-import { TablejsModule } from '@transunion-ui/tablejs'
+import { TablejsModule } from '@tablejs/community'
 ```
 
 ### Enable grid Functionality

@@ -3,12 +3,12 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 import { HorizResizeGripComponent } from './horiz-resize-grip.component';
 
 export class MockElementRef extends ElementRef {
-  nativeElement: any | undefined = {
+  override nativeElement: {
     children: null,
     innerText: '',
     contains: () => false,
-    appendChild: (child: Node) => true,
-    removeChild: (child: Node) => true,
+    appendChild: (child: Node) => void,
+    removeChild: (child: Node) => void,
     classList: {
       add: (item: string) => true
     },
@@ -17,10 +17,10 @@ export class MockElementRef extends ElementRef {
     getElementsByClassName: (cls: string) => [''],
     reordering: false,
     parentElement: {
-      dispatchEvent: (event: any) => true
+      dispatchEvent: (event: any) => true;
     },
-    querySelector: (str: string) => true
-  };
+    querySelector: (str: string) => null;
+  } | null = null;
 }
 
 describe('HorizResizeGripComponent', () => {

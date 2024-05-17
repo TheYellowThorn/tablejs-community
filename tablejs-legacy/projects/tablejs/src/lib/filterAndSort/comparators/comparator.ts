@@ -6,11 +6,11 @@ export class Comparator {
   public static filterSortService: FilterSortService | null = null;
 
   public static getCurrentSortOptions(): ISortOptions | null {
-    return Comparator.filterSortService?.currentSortOptions;
+    return Comparator.filterSortService!.currentSortOptions;
   }
 
   public static getCurrentFilterOptions(): IFilterOptions | null {
-    return Comparator.filterSortService?.currentFilterOptions;
+    return Comparator.filterSortService!.currentFilterOptions;
   }
 
   public static isString(val: any): boolean {

@@ -122,6 +122,18 @@ class DirectiveRegistrationService {
         this.nexuses.push(nexus);
         return nexus;
     }
+    clearVirtualNexus(nexus) {
+        if (!nexus) {
+            return;
+        }
+        nexus.scrollViewportDirective = null;
+        nexus.virtualForDirective = null;
+        const index = this.nexuses.indexOf(nexus);
+        if (index === -1) {
+            return;
+        }
+        this.nexuses.splice(index, 1);
+    }
     getVirtualNexusFromViewport(scrollViewportDirective) {
         return this.nexuses.filter((nexus) => nexus.scrollViewportDirective === scrollViewportDirective)[0];
     }
@@ -261,16 +273,16 @@ class VirtualForDirective {
         this.changes = new Subject();
         this._tablejsForOf = null;
         this._differ = null;
-        let parent = this._viewContainer.element.nativeElement.parentElement;
-        while (parent !== null && parent !== undefined && parent.scrollViewportDirective === undefined) {
-            parent = parent.parentElement;
+        this._parent = this._viewContainer.element.nativeElement.parentElement;
+        while (this._parent !== null && this._parent !== undefined && this._parent.scrollViewportDirective === undefined) {
+            this._parent = this._parent.parentElement;
         }
-        if (parent === null || parent === undefined) {
+        if (this._parent === null || this._parent === undefined) {
             throw Error('No scrollViewportDirective found for tablejsForOf.  Declare a scrollViewport using the scrollViewportDirective.');
         }
         else {
-            this._scrollViewportDirective = parent.scrollViewportDirective;
-            this.virtualNexus = this.directiveRegistrationService.setVirtualNexus(this, this._scrollViewportDirective);
+            this._scrollViewportDirective = this._parent.scrollViewportDirective;
+            this.directiveRegistrationService.setVirtualNexus(this, this._scrollViewportDirective);
             this._lastRange = this._scrollViewportDirective.range;
             this.rangeUpdatedSubscription$ = this._scrollViewportDirective.rangeUpdated.subscribe(rangeObj => {
                 if (this.rangeIsDifferent(this._lastRange, rangeObj.range)) {
@@ -327,7 +339,20 @@ class VirtualForDirective {
         }
     }
     ngOnDestroy() {
-        this.rangeUpdatedSubscription$.unsubscribe();
+        this._lastTablejsForOf = null;
+        this._tablejsForOf = null;
+        this._differ = null;
+        this._scrollViewportDirective = null;
+        this._renderedItems = [];
+        this._template = null;
+        this._tablejsVirtualForTrackBy = null;
+        if (this._parent) {
+            this._parent.scrollViewportDirective = null;
+            this._parent = null;
+        }
+        if (this.rangeUpdatedSubscription$) {
+            this.rangeUpdatedSubscription$.unsubscribe();
+        }
     }
 }
 VirtualForDirective.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.5", ngImport: i0, type: VirtualForDirective, deps: [{ token: i0.ViewContainerRef }, { token: i0.TemplateRef }, { token: i0.IterableDiffers }, { token: i0.ElementRef }, { token: DirectiveRegistrationService }], target: i0.ɵɵFactoryTarget.Directive });
@@ -346,6 +371,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.1.5", ngImpor
 class ScrollPrevSpacerComponent {
     constructor(elementRef) {
         this.elementRef = elementRef;
+    }
+    ngOnDestroy() {
+        this.template = null;
     }
 }
 ScrollPrevSpacerComponent.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.1.5", ngImport: i0, type: ScrollPrevSpacerComponent, deps: [{ token: i0.ElementRef }], target: i0.ɵɵFactoryTarget.Component });
@@ -749,6 +777,7 @@ class ScrollViewportDirective {
         const componentRef = this.virtualNexus.virtualForDirective._viewContainer.createComponent(ScrollPrevSpacerComponent);
         this.virtualNexus.virtualForDirective._viewContainer.detach(0);
         const ref = this.virtualNexus.virtualForDirective._viewContainer.createEmbeddedView(componentRef.instance.template, undefined, 0);
+        componentRef.destroy();
         this.prevSpacer = ref.rootNodes[0];
         this.postSpacer = document.createElement('tr');
         this.postSpacer.setAttribute('tablejsPostSpacer', '');
@@ -821,10 +850,8 @@ class ScrollViewportDirective {
                 }
             });
         }
-        // this.convertCustomElementsVariables();
         this.createTBodies();
         this.addScrollHandler();
-        // this.attachMutationObserver();
         if (this.items && (this.generateCloneMethod || this.virtualNexus.virtualForDirective._template)) {
             this.initScroll({
                 items: this.items,
@@ -924,7 +951,7 @@ class ScrollViewportDirective {
     ngAfterViewInit() {
         this.gridDirective = this.gridService.getParentTablejsGridDirective(this.elementRef.nativeElement)['gridDirective'];
         this.gridDirective.scrollViewportDirective = this;
-        this.gridDirective.preGridInitialize.pipe(take(1)).subscribe(res => {
+        this.preGridInitializeSubscription$ = this.gridDirective.preGridInitialize.pipe(take(1)).subscribe(res => {
             this.cdr.detectChanges();
             this.refreshContainerHeight();
             this.refreshViewport();
@@ -941,18 +968,35 @@ class ScrollViewportDirective {
         this._cloneMethod = this.generateCloneMethod;
     }
     ngOnDestroy() {
+        this.listElm = null;
+        this.virtualNexus.virtualForDirective._viewContainer.detach(0);
+        this.virtualNexus.virtualForDirective._viewContainer.clear();
+        this.items = [];
+        this.elementRef.nativeElement.scrollViewport = null;
+        this.templateRef = null;
+        this._cloneMethod = null;
+        this.generateCloneMethod = null;
+        if (this.virtualNexus) {
+            this.directiveRegistrationService.clearVirtualNexus(this.virtualNexus);
+            this.virtualNexus.virtualForDirective = null;
+            this.virtualNexus.scrollViewportDirective = null;
+            this.virtualNexus = null;
+        }
         clearTimeout(this.timeoutID);
         this.elementRef.nativeElement.removeEventListener('mouseenter', this.handleMouseOver);
         this.elementRef.nativeElement.removeEventListener('mouseleave', this.handleMouseOut);
         if (this.listContent) {
             this.listContent.removeEventListener('scroll', this.handleListContentScroll);
         }
+        this.handleListContentScroll = null;
         document.removeEventListener('keydown', this.handleKeyDown);
         if (this.virtualForChangesSubscription$) {
             this.virtualForChangesSubscription$.unsubscribe();
         }
+        if (this.preGridInitializeSubscription$) {
+            this.preGridInitializeSubscription$.unsubscribe();
+        }
         this.elementRef.nativeElement.scrollViewportDirective = null;
-        this.elementRef.nativeElement.scrollViewport = null;
     }
     setScrollSpacers() {
         const numItemsAfterShownList = this.items.length - this.range.extendedEndIndex;
@@ -1404,7 +1448,7 @@ class ScrollViewportDirective {
                     }
                     itemsToBatch = [];
                 }
-                if (this.preItemOverflowCount >= this.preItemOverflow) {
+                if (this.preItemOverflowCount >= Number(this.preItemOverflow)) {
                     break;
                 }
             }
@@ -1725,6 +1769,7 @@ class GridDirective extends TablejsGridProxy {
         this.columnReorderEnd = new EventEmitter();
         this.preGridInitialize = new EventEmitter(true);
         this.gridInitialize = new EventEmitter(true);
+        console.warn('TableJS has been moved!  Please install the newest versions from https://www.npmjs.com/package/@tablejs/community (npm install @tablejs/community).');
         this.registerDirectiveToElement();
         this.attachMutationObserver();
     }

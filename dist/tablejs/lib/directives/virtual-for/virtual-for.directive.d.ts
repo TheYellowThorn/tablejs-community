@@ -17,11 +17,11 @@ export declare class TablejsForOfContext<T, U extends NgIterable<T> = NgIterable
 }
 export declare class VirtualForDirective<T, U extends NgIterable<T> = NgIterable<T>> implements DoCheck, OnDestroy {
     _viewContainer: ViewContainerRef;
-    _template: TemplateRef<TablejsForOfContext<T, U>>;
+    _template: TemplateRef<TablejsForOfContext<T, U>> | null;
     private _differs;
     private elementRef;
     private directiveRegistrationService;
-    virtualNexus: IVirtualNexus;
+    virtualNexus: IVirtualNexus | null;
     changes: Subject<any>;
     rangeUpdatedSubscription$: Subscription;
     set tablejsVirtualForOf(tablejsVirtualForOf: U | undefined | null);
@@ -32,6 +32,7 @@ export declare class VirtualForDirective<T, U extends NgIterable<T> = NgIterable
     private _scrollViewportDirective;
     private _lastRange;
     private _renderedItems;
+    private _parent;
     /**
      * Asserts the correct type of the context for the template that `TablejsForOf` will render.
      *
@@ -45,9 +46,9 @@ export declare class VirtualForDirective<T, U extends NgIterable<T> = NgIterable
      */
     set tablejsVirtualForTemplate(value: TemplateRef<TablejsForOfContext<T, U>>);
     get template(): TemplateRef<TablejsForOfContext<T, U>>;
-    get tablejsVirtualForTrackBy(): TrackByFunction<T> | undefined;
-    set tablejsVirtualForTrackBy(fn: TrackByFunction<T> | undefined);
-    constructor(_viewContainer: ViewContainerRef, _template: TemplateRef<TablejsForOfContext<T, U>>, _differs: IterableDiffers, elementRef: ElementRef, directiveRegistrationService: DirectiveRegistrationService);
+    get tablejsVirtualForTrackBy(): TrackByFunction<T> | undefined | null;
+    set tablejsVirtualForTrackBy(fn: TrackByFunction<T> | undefined | null);
+    constructor(_viewContainer: ViewContainerRef, _template: TemplateRef<TablejsForOfContext<T, U>> | null, _differs: IterableDiffers, elementRef: ElementRef, directiveRegistrationService: DirectiveRegistrationService);
     rangeIsDifferent(range1: Range, range2: Range): boolean;
     renderedItemsNeedUpdate(): boolean;
     private _onRenderedDataChange;

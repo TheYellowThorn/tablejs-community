@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input } from '@angular/core';
+import { Directive, ElementRef, Input, OnDestroy } from '@angular/core';
 import { IColumnHierarchy } from '../../shared/interfaces/i-column-hierarchy';
 import { GridService } from './../../services/grid/grid.service';
 import { GridDirective } from './../grid/grid.directive';
@@ -6,7 +6,7 @@ import { GridDirective } from './../grid/grid.directive';
 @Directive({
   selector: '[tablejsHideColumnIf], [tablejshidecolumnif], [tablejs-hide-column-if]'
 })
-export class HideColumnIfDirective {
+export class HideColumnIfDirective implements OnDestroy {
 
   private _hideColumn: boolean | undefined | null = false;
   private gridDirective: GridDirective | undefined;
@@ -242,6 +242,10 @@ export class HideColumnIfDirective {
 
   constructor(public elementRef: ElementRef, public gridService: GridService) { 
    this.elementRef.nativeElement.hideColumnIf = this;
+  }
+
+  ngOnDestroy(): void {
+    this.elementRef.nativeElement.hideColumnIf = null;
   }
 
 }

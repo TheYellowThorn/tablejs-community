@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 
 export class MockElementRef extends ElementRef {
 
-  nativeElement: any | undefined = {
+  override nativeElement: any = {
     dataClasses: null,
     getAttribute: (str: string) => this.attr,
     setAttribute: (att: string, str: string) => this.attr = str

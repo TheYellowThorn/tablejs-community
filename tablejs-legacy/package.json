@@ -1,11 +1,11 @@
 {
-  "name": "@transunion-ui/tablejs",
+  "name": "@tablejs/community",
   "version": "1.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:tablejs": "ng build @transunion-ui/tablejs",
+    "build:tablejs": "ng build @tablejs/community",
     "test": "ng test --code-coverage",
     "test:watch": "ng test --watch=true --code-coverage",
     "lint": "ng lint",
@@ -74,7 +74,7 @@
   },
   "description": "Tablejs ========",
   "bugs": {
-    "url": "https://github.com/transunionui/tablejs/issues"
+    "url": "https://github.com/TheYellowThorn/tablejs-community/issues"
   },
   "main": "index.js",
   "keywords": [
@@ -95,8 +95,8 @@
   "author": "Michael Gouwens",
   "repository": {
     "type": "git",
-    "url": "https://github.com/transunion-ui/tablejs"
+    "url": "https://github.com/tablejs/community"
   },
-  "homepage": "https://transunionui.github.io/tablejs/",
+  "homepage": "https://theyellowthorn.github.io/tablejs/",
   "license": "MIT"
 }

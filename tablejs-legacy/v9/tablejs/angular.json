@@ -3,38 +3,38 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "@transunion-ui/tablejs": {
+    "@tablejs/community": {
       "projectType": "library",
-      "root": "projects/transunion-ui/tablejs",
-      "sourceRoot": "projects/transunion-ui/tablejs/src",
+      "root": "projects/tablejs/community",
+      "sourceRoot": "projects/tablejs/community/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/transunion-ui/tablejs/tsconfig.lib.json",
-            "project": "projects/transunion-ui/tablejs/ng-package.json"
+            "tsConfig": "projects/tablejs/community/tsconfig.lib.json",
+            "project": "projects/tablejs/community/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/transunion-ui/tablejs/tsconfig.lib.prod.json"
+              "tsConfig": "projects/tablejs/community/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/transunion-ui/tablejs/src/test.ts",
-            "tsConfig": "projects/transunion-ui/tablejs/tsconfig.spec.json",
-            "karmaConfig": "projects/transunion-ui/tablejs/karma.conf.js"
+            "main": "projects/tablejs/community/src/test.ts",
+            "tsConfig": "projects/tablejs/community/tsconfig.spec.json",
+            "karmaConfig": "projects/tablejs/community/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/transunion-ui/tablejs/tsconfig.lib.json",
-              "projects/transunion-ui/tablejs/tsconfig.spec.json"
+              "projects/tablejs/community/tsconfig.lib.json",
+              "projects/tablejs/community/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -43,5 +43,5 @@
         }
       }
     }},
-  "defaultProject": "@transunion-ui/tablejs"
+  "defaultProject": "@tablejs/community"
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { AbstractControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 
@@ -6,7 +6,7 @@ import { AbstractControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/form
   selector: '[tablejsEditableCell], [tablejseditablecell], [tablejs-editable-cell]',
   host: { class: 'tablejs-editable-cell' }
 })
-export class EditableCellDirective implements AfterViewInit, OnInit {
+export class EditableCellDirective implements AfterViewInit, OnInit, OnDestroy {
 
   @Input('tablejsEditableCell') initialData: any; // initial data is an object
   @Input() validator: Function | null = null;
@@ -25,6 +25,8 @@ export class EditableCellDirective implements AfterViewInit, OnInit {
   originalText: string | null = null;
   lastValidInput: string | null = null;
   onFocusOut: any;
+  inputListener: any;
+  hasInputListener: boolean = false;
 
   constructor(private elementRef: ElementRef) {
     this.containerDiv = document.createElement('div');
@@ -104,7 +106,7 @@ export class EditableCellDirective implements AfterViewInit, OnInit {
   ngAfterViewInit() {
     this.input.value = this.elementRef.nativeElement.innerText;
     this.lastText = this.input.value;
-    this.input.addEventListener('input', () => { 
+    this.inputListener = () => { 
       if (this.regExp) {
         const regEx: RegExp = new RegExp(this.regExp, this.regExpFlags);
         if (regEx.test(this.input.value)) {
@@ -118,7 +120,9 @@ export class EditableCellDirective implements AfterViewInit, OnInit {
         this.validateInput();
         this.cellInput.emit(this.getCellObject());
       }
-    });
+    };
+    this.input.addEventListener('input', this.inputListener);
+    this.hasInputListener = true;
   }
 
   getCellObject(): any {
@@ -139,6 +143,13 @@ export class EditableCellDirective implements AfterViewInit, OnInit {
       this.input.classList.add('error');
     }
     this.cellValidation.emit(validationOk);
+  }
+
+  ngOnDestroy(): void {
+    if (this.hasInputListener) {
+      this.input.removeEventListener('input', this.inputListener);
+      this.hasInputListener = false;
+    }
   }
 
 }

@@ -31,7 +31,7 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
   startY: number = 0;
   stylesByClass: any[] = [];
   id: string | null = null;
-  viewport: HTMLElement | null = null;
+  viewport: HTMLElement | null | undefined = null;
   viewportID: string | null = null;
   currentClassesToResize: string[] = [];
   startingWidths: number[] = [];
@@ -74,6 +74,7 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
   contentResizeSensor: ResizeSensor | null = null;
   observer: MutationObserver | null = null;
   isCustomElement: boolean = false;
+  pointerListenerFunc: any;
 
   parentGroups: Element[][] = [];
 
@@ -97,9 +98,9 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
   widthStyleFragment: DocumentFragment | null = null;
   reorderHighlightStyle: HTMLStyleElement | null = null;
   reorderHighlightStyleFragment: DocumentFragment | null = null;
-  subGroupStyles: HTMLStyleElement[] = [];
+  subGroupStyles: (HTMLStyleElement | null)[] = [];
   subGroupFragments: (DocumentFragment | null)[] = [];
-  gridOrderStyles: HTMLStyleElement[] = [];
+  gridOrderStyles: (HTMLStyleElement | null)[] = [];
   gridOrderFragments: (DocumentFragment | null)[] = [];
   subGroupStyleObjs: any = {};
   scrollbarAdjustmentFragment: DocumentFragment | null = null;
@@ -117,6 +118,8 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
   private injector: Injector;
   private DRAG_AND_DROP_GHOST_OVERLAY_DATA = new InjectionToken<any>('DRAG_AND_DROP_GHOST_OVERLAY_DATA');
 
+  private animationFrameIDs: number[] = [];
+
   @Input() linkClass: string | undefined = undefined;
   @Input() resizeColumnWidthByPercent: boolean = false;
 
@@ -131,7 +134,6 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
   @Output() gridInitialize: EventEmitter<any> = new EventEmitter<any>(true);
 
   constructor(
-    private viewContainerRef: ViewContainerRef,
     private elementRef: ElementRef,
     private resolver: ComponentFactoryResolver,
     private gridService: GridService,
@@ -142,6 +144,7 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
     private operatingSystem: OperatingSystemService,
     private rendererFactory: RendererFactory2) {
     super();
+    console.warn('TableJS has been moved!  Please install the newest versions from https://www.npmjs.com/package/@tablejs/community (npm install @tablejs/community).');
     this.registerDirectiveToElement();
     this.attachMutationObserver();
   }
@@ -152,20 +155,22 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
   }
 
   private attachMutationObserver(): void {
-    const ths: any = this;
-    this.observer = new MutationObserver((mutations: MutationRecord[]) => {
-      mutations.forEach((mutation: MutationRecord) => {
-        ths.updateMutations(mutation);
+    if (!this.observer) {
+      const ths: any = this;
+      this.observer = new MutationObserver((mutations: MutationRecord[]) => {
+        mutations.forEach((mutation: MutationRecord) => {
+          ths.updateMutations(mutation);
+        });
       });
-    });
 
-    this.observer.observe(this.elementRef.nativeElement, {
-      // configure it to listen to attribute changes
-      attributes: true,
-      subtree: true,
-      childList: true,
-      characterData: false
-    });
+      this.observer.observe(this.elementRef.nativeElement, {
+        // configure it to listen to attribute changes
+        attributes: true,
+        subtree: true,
+        childList: true,
+        characterData: false
+      });
+    }
   }
 
   private updateMutations(mutation: MutationRecord): void {
@@ -203,7 +208,6 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
         this.directiveRegistrationService,
         this.scrollDispatcherService,
         this.operatingSystem,
-        this.resolver,
         null,
         this.rendererFactory
       );
@@ -220,7 +224,7 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
 
     this.elementRef.nativeElement.directive = this;
     if (!this.document['hasPointerDownListener']) {
-      this.document.addEventListener('pointerdown', (e: Event) => {
+      this.pointerListenerFunc = (e: Event) => {
         let el: HTMLElement | any | null = e.target as HTMLElement;
         if (el) {
           while (el !== null && el.getAttribute('tablejsGrid') === null) {
@@ -230,26 +234,30 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
             el['directive'].onPointerDown(e);
           }
         }
-      });
+      }
+      this.document.addEventListener('pointerdown', this.pointerListenerFunc);
       this.document['hasPointerDownListener'] = true;
     }
-    window.requestAnimationFrame((timestamp) => {
+    const animationFrameID: number = window.requestAnimationFrame((timestamp) => {
       this.onEnterFrame(this, timestamp);
     });
+    this.animationFrameIDs.push(animationFrameID);
   }
 
   private onEnterFrame(ths: any, timestamp: any) {
+
     if (this.columnsWithDataClasses.length > 0) {
-      this.observer!.disconnect();
+      this.observer?.disconnect();
     }
 
     if (this.columnsWithDataClasses.length === 0 && this.mutationColumnsWithDataClasses.length === 0) {
-      window.requestAnimationFrame((tmstamp) => {
+      const animationFrameID: number = window.requestAnimationFrame((tmstamp) => {
         ths.onEnterFrame(ths, tmstamp);
       });
+      this.animationFrameIDs.push(animationFrameID);
       return;
     }
-
+    
     if (this.columnsWithDataClasses.length === 0 && this.mutationColumnsWithDataClasses.length !== 0) {
       this.isCustomElement = true;
 
@@ -276,11 +284,14 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
     const resizeCls = resizeClasses[0];
     const firstEl: HTMLElement = this.elementRef.nativeElement.getElementsByClassName(resizeCls)[0];
 
-    this.initialWidthSettingsSubscription$ = this.gridService.containsInitialWidthSettings.subscribe(hasWidths => {
-      this.initialWidthsAreSet = hasWidths;
-    });
+    
+    if (!this.initialWidthSettingsSubscription$) {
+      this.initialWidthSettingsSubscription$ = this.gridService.containsInitialWidthSettings.subscribe(hasWidths => {
+        this.initialWidthsAreSet = hasWidths;
+      });
+    }
+   
     if (!this.hiddenColumnChangesSubscription$) {
-
       this.hiddenColumnChangesSubscription$ = this.hiddenColumnChanges.subscribe(
         (change: IColumnHideChange | null) => {
 
@@ -330,15 +341,17 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
     const maxColumnsPerRow: number = this.parentGroups[this.parentGroups.length - 1].length;
 
     if (firstEl === undefined || firstEl === null) {
-      window.requestAnimationFrame((tmstamp) => {
+      const animationFrameID: number = window.requestAnimationFrame((tmstamp) => {
         ths.onEnterFrame(ths, tmstamp);
       });
+      this.animationFrameIDs.push(animationFrameID);
     } else {
       const keys: any[] = Object.keys(this.initialWidths);
       if (this.initialWidthsAreSet === true && keys.length < maxColumnsPerRow) {
-        window.requestAnimationFrame((tmstamp) => {
+        const animationFrameID: number = window.requestAnimationFrame((tmstamp) => {
           ths.awaitWidths(ths, tmstamp);
         });
+        this.animationFrameIDs.push(animationFrameID);
       } else {
         this.checkForGridInitReady();
       }
@@ -423,20 +436,23 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
     const maxColumnsPerRow: number = this.parentGroups[this.parentGroups.length - 1].length;
 
     if (this.initialWidthsAreSet === true && (keys.length < maxColumnsPerRow || !this.initialWidths[resizeCls])) {
-      window.requestAnimationFrame((tmstamp) => {
+      const animationFrameID: number = window.requestAnimationFrame((tmstamp) => {
         this.awaitWidths(this, tmstamp);
       });
+      this.animationFrameIDs.push(animationFrameID);
     } else if (this.initialWidthsAreSet === undefined) {
-      window.requestAnimationFrame((tmstamp) => {
+      const animationFrameID: number = window.requestAnimationFrame((tmstamp) => {
         this.awaitWidths(this, tmstamp);
       });
+      this.animationFrameIDs.push(animationFrameID);
     } else {
       if (!this.linkClass) {
         this.initGrid();
       } else {
-        window.requestAnimationFrame((tmstamp) => {
+        const animationFrameID: number = window.requestAnimationFrame((tmstamp) => {
           this.awaitSingleFrame(this, tmstamp);
         });
+        this.animationFrameIDs.push(animationFrameID);
       }
     }
   }
@@ -1148,6 +1164,7 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
             if (this.resizeColumnWidthByPercent || startingWidth.toString().includes('%')) {
               markup = resizeID + ' { width: ' + 100 + '%}';
               this.resizeColumnWidthByPercent = true;
+              this.attachContentResizeSensor();
             } else {
               markup = resizeID + ' { width: ' + startingWidth + 'px }';
             }
@@ -1327,7 +1344,6 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
   }
 
   private initGrid() {
-    
     if (this.linkClass === undefined || this.gridService.linkedDirectiveObjs[this.linkClass] === undefined) {
       this.headStyle = document.createElement('style');
       this.headStyle.type = 'text/css';
@@ -1397,7 +1413,7 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
 
   private verifyLinkedTemplateClassesMatch(): void {
     let columnsAreTheSame: boolean = true;
-    this.gridService.linkedDirectiveObjs[this.linkClass!].gridTemplateClasses.forEach((item, index) => {
+    this.gridService.linkedDirectiveObjs[this.linkClass!].gridTemplateClasses.forEach((item: any, index: any) => {
       if (item !== this.gridTemplateClasses[index]) {
         columnsAreTheSame = false;
       }
@@ -1421,6 +1437,7 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
         }
       });
     }
+    return [];
   }
 
   private emitGridInitialization() {
@@ -1481,7 +1498,7 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
     return containerRef;
   }
 
-  private createInjector(dataToPass, token: any): Injector {
+  private createInjector(dataToPass: any, token: any): Injector {
     return Injector.create({
       parent: this.injector,
       providers: [
@@ -2343,15 +2360,17 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
       if (this.viewport === undefined || this.viewport === null) {
         throw Error('A viewport has not be declared.  Try adding the tablejsViewport directive to your tbody tag.');
       }
-      this.contentResizeSensor = new ResizeSensor(this.viewport.firstElementChild!, () => {
+      if (!this.contentResizeSensor) {
+        this.contentResizeSensor = new ResizeSensor(this.viewport.firstElementChild!, () => {
+          this.setScrollbarAdjustmentStyle();
+        });
+        this.scrollbarAdjustmentFragment = document.createDocumentFragment();
+        this.scrollbarAdjustmentStyle = document.createElement('style');
         this.setScrollbarAdjustmentStyle();
-      });
-      this.scrollbarAdjustmentFragment = document.createDocumentFragment();
-      this.scrollbarAdjustmentStyle = document.createElement('style');
-      this.setScrollbarAdjustmentStyle();
-      this.scrollbarAdjustmentFragment.appendChild(this.scrollbarAdjustmentStyle);
-
-      this.addStyle(this.scrollbarAdjustmentStyle, false);
+        this.scrollbarAdjustmentFragment.appendChild(this.scrollbarAdjustmentStyle);
+  
+        this.addStyle(this.scrollbarAdjustmentStyle, false);
+      }
 
     }
   }
@@ -2430,34 +2449,45 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
   }
 
   private removeStylesFromHead() {
+    this.styleList = [];
     if (this.headTag.contains(this.headStyle)) {
       this.headTag.removeChild(this.headStyle!);
+      this.headStyle = null;
     }
-    if (this.headTag.contains(this.widthStyle)) {
-      this.headTag.removeChild(this.widthStyle!);
+    if (this.widthStyleFragment && this.widthStyleFragment.contains(this.widthStyle)) {
+      this.widthStyleFragment!.removeChild(this.widthStyle!);
       this.widthStyleFragment = null;
+      this.widthStyle = null;
     }
-    if (this.headTag.contains(this.reorderHighlightStyle)) {
-      this.headTag.removeChild(this.reorderHighlightStyle!);
+    if (this.reorderHighlightStyleFragment && this.reorderHighlightStyleFragment.contains(this.reorderHighlightStyle)) {
+      this.reorderHighlightStyleFragment.removeChild(this.reorderHighlightStyle!);
       this.reorderHighlightStyleFragment = null;
+      this.reorderHighlightStyle = null;
     }
     for (let i = 0, len = this.subGroupFragments.length; i < len; i++) {
-      if (this.headTag.contains(this.subGroupStyles[i])) {
-        this.headTag.removeChild(this.subGroupStyles[i]);
+      if (this.subGroupFragments[i] && (this.subGroupFragments[i] as DocumentFragment).contains(this.subGroupStyles[i])) {
+        (this.subGroupFragments[i] as DocumentFragment).removeChild(this.subGroupStyles[i]!);
         this.subGroupFragments[i] = null;
+        this.subGroupStyles[i] = null;
       }
     }
     for (let i = 0, len = this.gridOrderFragments.length; i < len; i++) {
-      if (this.headTag.contains(this.gridOrderStyles[i])) {
-        this.headTag.removeChild(this.gridOrderStyles[i]);
+      if (this.gridOrderFragments[i] && (this.gridOrderFragments[i] as DocumentFragment).contains(this.gridOrderStyles[i])) {
+        (this.gridOrderFragments[i] as DocumentFragment).removeChild(this.gridOrderStyles[i]!);
         this.gridOrderFragments[i] = null;
+        this.gridOrderStyles[i] = null;
       }
     }
   }
 
   public ngOnDestroy() {
-    this.document['hasPointerDownListener'] = false;
-    this.observer!.disconnect();
+
+    this.removePointerListeners();
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
+    
     if (this.linkClass === undefined) {
       this.removeStylesFromHead();
     }
@@ -2467,6 +2497,89 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
     if (this.hiddenColumnChangesSubscription$) {
       this.hiddenColumnChangesSubscription$.unsubscribe();
     }
+
+    for (let i = 0; i < this.animationFrameIDs.length; i++) {
+      const id: number = this.animationFrameIDs[i];
+      window.cancelAnimationFrame(id);
+    }
+
+    if (this.document['selection']) {
+      this.document['selection'].empty();
+    }
+    if (document['currentGridDirective'] === this) {
+      document['currentGridDirective'] = null;
+    }
+    if (this.document['hasPointerDownListener']) {
+      this.document.removeEventListener('pointerdown', this.pointerListenerFunc);
+      this.document['hasPointerDownListener'] = false;
+    }
+    if (this.elementRef.nativeElement.gridDirective === this) {
+      this.elementRef.nativeElement.gridDirective = null;
+    }
+    if (this.elementRef.nativeElement.parentElement.gridDirective === this) {
+      this.elementRef.nativeElement.parentElement.gridDirective = null;
+    };
+    if (this.elementRef.nativeElement.directive === this) {
+      this.elementRef.nativeElement.directive = null;
+    }
+    if (this.contentResizeSensor) {
+      this.contentResizeSensor.detach();
+      this.contentResizeSensor = null;
+    }
+    if (this.linkClass) {
+      this.gridTemplateTypes = [];
+      this.styleList = [];
+      this.subGroupStyleObjs = null;
+      this.subGroupStyles = [];
+      this.subGroupFragments = [];
+      this.gridOrder = [];
+    }
+    this.widthStyle = null;
+    this.gridOrderStyles = [];
+    this.gridOrderFragments = [];
+    this.scrollbarAdjustmentFragment = null;
+    this.scrollbarAdjustmentStyle = null;
+
+    this.stylesByClass = [];
+    this.currentClassesToResize = [];
+    this.startingWidths = [];
+    this.minWidths = [];
+    this.resizableGrips = [];
+    this.resizableColumns = [];
+    this.reorderGrips = [];
+    this.reorderableColumns = [];
+    this.columnsWithDataClasses = [];
+    this.rows = [];
+    this.infiniteScrollViewports = [];
+
+
+    this.gridTemplateClasses = [];
+    this.gridOrder = [];
+    this.classWidths = [];
+    this.gridTemplateTypes = [];
+    this.draggingColumn = null;
+    this.colRangeGroups = [];
+    this.lastDraggedOverElement = null;
+    this.mutationResizableColumns = [];
+    this.mutationResizableGrips = [];
+    this.mutationReorderGrips = [];
+    this.mutationReorderableColumns = [];
+    this.mutationColumnsWithDataClasses = [];
+    this.mutationRows = [];
+    this.mutationInfiniteScrollViewports = [];
+
+    this.headStyle = null;
+    this.styleList = [];
+    this.initialWidths = [];
+    this.lastColumns = [];
+
+    this.pointerListenerFunc = null;
+
+    this.parentGroups = [];
+
+    this.colData = null;
+    this.colDataGroups = [];
+    this.elementsWithHighlight = [];
   }
 
 }

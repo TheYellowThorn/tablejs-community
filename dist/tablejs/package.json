@@ -1,6 +1,6 @@
 {
   "name": "@tablejs/community",
-  "version": "2.2.36",
+  "version": "2.2.37",
   "peerDependencies": {
     "@angular/common": ">=12.0.5",
     "@angular/core": ">=12.0.5",
@@ -28,9 +28,9 @@
   "author": "Michael Gouwens",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TheYellowThorn/tablejs-community"
+    "url": "https://github.com/tablejs/community"
   },
-  "homepage": "https://theyellowthorn.github.io/tablejs/",
+  "homepage": "https://transunionui.github.io/tablejs/",
   "dependencies": {
     "tslib": "^2.0.0"
   },

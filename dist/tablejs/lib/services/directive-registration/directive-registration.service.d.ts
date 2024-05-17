@@ -8,6 +8,7 @@ export declare class DirectiveRegistrationService {
     constructor(gridService: GridService);
     private nexuses;
     setVirtualNexus(virtualForDirective: VirtualForDirective<any, any>, scrollViewportDirective: ScrollViewportDirective): IVirtualNexus;
+    clearVirtualNexus(nexus: IVirtualNexus): void;
     getVirtualNexusFromViewport(scrollViewportDirective: ScrollViewportDirective): IVirtualNexus;
     registerNodeAttributes(node: any): void;
     registerReorderGripOnGridDirective(node: HTMLElement, fromMutation?: boolean): void;

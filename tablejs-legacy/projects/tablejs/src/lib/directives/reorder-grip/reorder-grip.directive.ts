@@ -14,7 +14,7 @@ export class ReorderGripDirective implements AfterViewInit {
 
   registerGripOnGridDirective() {
     const el: HTMLElement | any | null = this.gridService.getParentTablejsGridDirective(this.elementRef.nativeElement);
-    if (el !== null) {
+    if (el !== null && el['gridDirective']) {
       el['gridDirective'].addReorderGrip(this.elementRef.nativeElement);
     }
   }
