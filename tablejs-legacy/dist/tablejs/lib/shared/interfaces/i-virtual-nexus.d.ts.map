@@ -1,0 +1,1 @@
+{"version":3,"file":"i-virtual-nexus.d.ts","sourceRoot":"","sources":["../../../../../projects/tablejs/src/lib/shared/interfaces/i-virtual-nexus.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,uBAAuB,EAAE,MAAM,8DAA8D,CAAC;AACvG,OAAO,EAAE,mBAAmB,EAAE,MAAM,sDAAsD,CAAC;AAE3F,MAAM,WAAW,aAAa;IAC5B,uBAAuB,EAAE,uBAAuB,CAAC;IACjD,mBAAmB,EAAE,mBAAmB,CAAC,GAAG,EAAE,GAAG,CAAC,CAAC;CACpD"}

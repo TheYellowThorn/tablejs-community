@@ -1,0 +1,1 @@
+{"version":3,"file":"i-column-resize-event.d.ts","sourceRoot":"","sources":["../../../../../../projects/tablejs/src/lib/shared/interfaces/events/i-column-resize-event.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,kBAAkB;IACjC,YAAY,EAAE,GAAG,CAAC;IAClB,WAAW,EAAE,MAAM,CAAC;IACpB,cAAc,EAAE,MAAM,CAAC;IACvB,mBAAmB,EAAE,MAAM,EAAE,CAAC;IAC9B,IAAI,CAAC,EAAE,MAAM,CAAC;CACf"}

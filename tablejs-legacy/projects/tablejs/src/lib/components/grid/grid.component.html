@@ -1,0 +1,12 @@
+<div tablejsGrid class="grid-component" [linkClass]="linkClass" [resizeColumnWidthByPercent]="resizeColumnWidthByPercent"
+(columnResizeStart)="columnResizeStarted($event)"
+(columnResize)="columnResized($event)"
+(columnResizeEnd)="columnResizeEnded($event)"
+(columnReorderStart)="columnReorderStarted($event)"
+(columnReorder)="columnReordered($event)"
+(columnReorderEnd)="columnReorderEnded($event)"
+(gridInitialize)="gridInitialized($event)"
+>
+
+	<ng-content></ng-content>
+</div>

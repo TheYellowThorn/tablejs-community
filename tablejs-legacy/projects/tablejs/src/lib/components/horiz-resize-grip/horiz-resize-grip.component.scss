@@ -1,0 +1,19 @@
+.resize-grip {
+	cursor: ew-resize;
+	position: absolute;
+	right:0px;
+	top:0px;
+	height: 100%;
+	width:30px;
+	padding: 0px;
+	margin: 0px;
+	display: block;
+
+	i {
+		left: 0.5px;
+		color:#ffffff;
+		position: relative;
+		top: 50%;
+		transform: translateY(-8px);
+	}
+}

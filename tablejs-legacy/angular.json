@@ -1,0 +1,48 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "@transunion-ui/tablejs": {
+      "projectType": "library",
+      "root": "projects/tablejs",
+      "sourceRoot": "projects/tablejs/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/tablejs/tsconfig.lib.json",
+            "project": "projects/tablejs/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/tablejs/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/tablejs/src/test.ts",
+            "tsConfig": "projects/tablejs/tsconfig.spec.json",
+            "karmaConfig": "projects/tablejs/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/tablejs/**/*.ts",
+              "projects/tablejs/**/*.html"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "@transunion-ui/tablejs",
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
+  }
+}

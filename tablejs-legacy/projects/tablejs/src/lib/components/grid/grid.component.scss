@@ -1,0 +1,64 @@
+
+.tablejs-table-container {
+	display:inline-block;
+	padding: 0px !important;
+	vertical-align:top;
+}
+
+.tablejs-infinite-scroll-viewport {
+	position: relative;
+	height: 301px;
+	overflow:hidden;
+	overflow-y:auto;
+}
+.example-viewport table {
+	overflow: visible;
+}
+.tablejs-table-width {
+	/* width: 2700px; */
+	width:auto;
+}
+.tablejs-table-container {
+	tr td, tr th {
+		padding: 0rem;
+	}
+}
+.grid-component {
+	tr td div, tr th div {
+		padding: 0.75rem;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+}
+
+.tablejs-resizeable {
+	cursor: ew-resize;
+}
+.tablejs-editable-cell {
+	display: inline-block;
+    width: 100%;
+    padding: 5px;
+	margin: -5px;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0px 0px 2px 1px rgba(0, 0, 0, 0.05);
+
+	div {
+		position: absolute;
+		display: block;
+		left: -3px;
+		top: -3px;
+		width: 100%;
+	}
+	input {
+		position: relative;
+		top: 0px;
+		left: 0px;
+		display: block;
+		width: 100%;
+
+		&.error {
+			outline-color: #990000;
+		}
+	}
+}
