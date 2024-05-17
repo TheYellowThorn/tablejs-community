@@ -22,6 +22,20 @@ export class DirectiveRegistrationService {
     return nexus;
   }
 
+  public clearVirtualNexus(nexus: IVirtualNexus): void {
+    if (!nexus) {
+      return;
+    }
+    nexus.scrollViewportDirective = null;
+    nexus.virtualForDirective = null;
+    const index: number = this.nexuses.indexOf(nexus);
+    if (index === -1) {
+      return;
+    }
+    this.nexuses.splice(index, 1);
+    
+  }
+
   public getVirtualNexusFromViewport(scrollViewportDirective: ScrollViewportDirective): IVirtualNexus {
     return this.nexuses.filter((nexus: IVirtualNexus) => nexus.scrollViewportDirective === scrollViewportDirective)[0];
   }

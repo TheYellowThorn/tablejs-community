@@ -1,0 +1,35 @@
+import { AfterViewInit, ElementRef, EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import * as i0 from "@angular/core";
+export declare class EditableCellDirective implements AfterViewInit, OnInit, OnDestroy {
+    private elementRef;
+    initialData: any;
+    validator: Function | null;
+    validatorParams: any[];
+    regExp: string | null;
+    regExpFlags: string;
+    list: string[];
+    cellInput: EventEmitter<any>;
+    cellFocusOut: EventEmitter<any>;
+    cellValidation: EventEmitter<boolean>;
+    containerDiv: HTMLDivElement;
+    input: HTMLInputElement;
+    dataList: HTMLDataListElement;
+    option: HTMLOptionElement | null;
+    lastText: string | null;
+    originalText: string | null;
+    lastValidInput: string | null;
+    onFocusOut: any;
+    inputListener: any;
+    hasInputListener: boolean;
+    constructor(elementRef: ElementRef);
+    onKeyDownHandler(event: KeyboardEvent): void;
+    onClick(event: MouseEvent): void;
+    createDataList(): void;
+    ngOnInit(): void;
+    ngAfterViewInit(): void;
+    getCellObject(): any;
+    validateInput(): void;
+    ngOnDestroy(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<EditableCellDirective, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<EditableCellDirective, "[tablejsEditableCell], [tablejseditablecell], [tablejs-editable-cell]", never, { "initialData": "tablejsEditableCell"; "validator": "validator"; "validatorParams": "validatorParams"; "regExp": "regExp"; "regExpFlags": "regExpFlags"; "list": "list"; }, { "cellInput": "cellInput"; "cellFocusOut": "cellFocusOut"; "cellValidation": "cellValidation"; }, never, never, false, never>;
+}

@@ -1,0 +1,58 @@
+{
+  "name": "@tablejs/community",
+  "version": "2.2.36",
+  "peerDependencies": {
+    "@angular/common": ">=12.0.5",
+    "@angular/core": ">=12.0.5",
+    "css-element-queries": "^1.2.3"
+  },
+  "bugs": {
+    "url": "https://github.com/TheYellowThorn/tablejs-community/issues"
+  },
+  "main": "fesm2015/tablejs-community.mjs",
+  "keywords": [
+    "tablejs",
+    "datagrid",
+    "data-grid",
+    "datatable",
+    "data-table",
+    "grid",
+    "data",
+    "table",
+    "angular",
+    "angular-components",
+    "screen-reader",
+    "infinite-scrolling",
+    "web-components"
+  ],
+  "author": "Michael Gouwens",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheYellowThorn/tablejs-community"
+  },
+  "homepage": "https://theyellowthorn.github.io/tablejs/",
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
+  "license": "MIT",
+  "module": "fesm2015/tablejs-community.mjs",
+  "es2020": "fesm2020/tablejs-community.mjs",
+  "esm2020": "esm2020/tablejs-community.mjs",
+  "fesm2020": "fesm2020/tablejs-community.mjs",
+  "fesm2015": "fesm2015/tablejs-community.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "esm2020": "./esm2020/tablejs-community.mjs",
+      "es2020": "./fesm2020/tablejs-community.mjs",
+      "es2015": "./fesm2015/tablejs-community.mjs",
+      "node": "./fesm2015/tablejs-community.mjs",
+      "default": "./fesm2020/tablejs-community.mjs"
+    }
+  },
+  "sideEffects": false
+}

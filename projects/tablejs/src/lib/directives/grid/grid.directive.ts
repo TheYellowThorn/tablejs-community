@@ -144,6 +144,7 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
     private operatingSystem: OperatingSystemService,
     private rendererFactory: RendererFactory2) {
     super();
+    console.warn('TableJS has been moved!  Please install the newest versions from https://www.npmjs.com/package/@tablejs/community (npm install @tablejs/community).');
     this.registerDirectiveToElement();
     this.attachMutationObserver();
   }

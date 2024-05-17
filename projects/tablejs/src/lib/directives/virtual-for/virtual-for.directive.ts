@@ -29,7 +29,7 @@ export class TablejsForOfContext<T, U extends NgIterable<T> = NgIterable<T>> {
 @Directive({selector: '[tablejsVirtualFor][tablejsVirtualForOf]'})
 export class VirtualForDirective<T, U extends NgIterable<T> = NgIterable<T>> implements DoCheck, OnDestroy {
 
-  public virtualNexus: IVirtualNexus;
+  public virtualNexus: IVirtualNexus | null;
   public changes: Subject<any> = new Subject<any>();
   public rangeUpdatedSubscription$: Subscription;
 
@@ -42,10 +42,11 @@ export class VirtualForDirective<T, U extends NgIterable<T> = NgIterable<T>> imp
   public _tablejsForOf: U|undefined|null = null;
   private _lastTablejsForOf: U|undefined|null;
   private _differ: IterableDiffer<T>|null = null;
-  private _tablejsVirtualForTrackBy: TrackByFunction<T> | undefined;
-  private _scrollViewportDirective: ScrollViewportDirective;
+  private _tablejsVirtualForTrackBy: TrackByFunction<T> | undefined | null;
+  private _scrollViewportDirective: ScrollViewportDirective | undefined | null;
   private _lastRange: Range;
   private _renderedItems: any[];
+  private _parent: HTMLElement | undefined | null;
   /**
    * Asserts the correct type of the context for the template that `TablejsForOf` will render.
    *
@@ -69,14 +70,14 @@ export class VirtualForDirective<T, U extends NgIterable<T> = NgIterable<T>> imp
   }
 
   public get template(): TemplateRef<TablejsForOfContext<T, U>> {
-    return this._template;
+    return this._template as TemplateRef<TablejsForOfContext<T, U>>;
   }
 
   @Input()
-  get tablejsVirtualForTrackBy(): TrackByFunction<T> | undefined {
+  get tablejsVirtualForTrackBy(): TrackByFunction<T> | undefined | null {
     return this._tablejsVirtualForTrackBy;
   }
-  set tablejsVirtualForTrackBy(fn: TrackByFunction<T> | undefined) {
+  set tablejsVirtualForTrackBy(fn: TrackByFunction<T> | undefined | null) {
     this._tablejsVirtualForTrackBy = fn ?
         (index, item) => fn(index + (this._lastRange ? this._lastRange.extendedStartIndex! : 0), item) :
         undefined;
@@ -86,23 +87,26 @@ export class VirtualForDirective<T, U extends NgIterable<T> = NgIterable<T>> imp
 
   constructor(
       public _viewContainer: ViewContainerRef,
-      public _template: TemplateRef<TablejsForOfContext<T, U>>,
+      public _template: TemplateRef<TablejsForOfContext<T, U>> | null,
       private _differs: IterableDiffers,
       private elementRef: ElementRef,
       private directiveRegistrationService: DirectiveRegistrationService) {
-        let parent = this._viewContainer.element.nativeElement.parentElement;
+        
+        this._parent = this._viewContainer.element.nativeElement.parentElement;
 
-        while (parent !== null && parent !== undefined && parent.scrollViewportDirective === undefined) {
-          parent = parent.parentElement;
+        while (this._parent !== null && this._parent !== undefined && (this._parent as any).scrollViewportDirective === undefined) {
+          this._parent = this._parent.parentElement;
         }
-        if (parent === null || parent === undefined) {
+        if (this._parent === null || this._parent === undefined) {
           throw Error('No scrollViewportDirective found for tablejsForOf.  Declare a scrollViewport using the scrollViewportDirective.');
         } else {
-          this._scrollViewportDirective = parent.scrollViewportDirective;
-          this.virtualNexus = this.directiveRegistrationService.setVirtualNexus(this, this._scrollViewportDirective);
-          this._lastRange = this._scrollViewportDirective.range;
+          
+          this._scrollViewportDirective = (this._parent as any).scrollViewportDirective;
+          this.directiveRegistrationService.setVirtualNexus(this, this._scrollViewportDirective!);
+          
+          this._lastRange = this._scrollViewportDirective!.range;
 
-          this.rangeUpdatedSubscription$ = this._scrollViewportDirective.rangeUpdated.subscribe(rangeObj => {
+          this.rangeUpdatedSubscription$ = this._scrollViewportDirective!.rangeUpdated.subscribe(rangeObj => {
             if (this.rangeIsDifferent(this._lastRange, rangeObj.range)) {
               this._lastRange = rangeObj.range;
               this._renderedItems = Array.from(this._tablejsForOf as Iterable<any>).slice(this._lastRange.extendedStartIndex!, this._lastRange.extendedEndIndex!);
@@ -165,6 +169,21 @@ export class VirtualForDirective<T, U extends NgIterable<T> = NgIterable<T>> imp
   }
 
   ngOnDestroy(): void {
-    this.rangeUpdatedSubscription$.unsubscribe();
+    this._lastTablejsForOf = null;
+    this._tablejsForOf = null;
+    this._differ = null;
+    this._scrollViewportDirective = null;
+    this._renderedItems = [];
+    this._template = null;
+    this._tablejsVirtualForTrackBy = null;
+    if (this._parent) {
+      (this._parent as any).scrollViewportDirective = null;
+      this._parent = null;
+    }   
+
+    if (this.rangeUpdatedSubscription$) {
+      this.rangeUpdatedSubscription$.unsubscribe();
+    }
+    
   }
 }

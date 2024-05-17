@@ -1,9 +1,9 @@
 {
   "name": "@transunion-ui/tablejs",
-  "version": "2.2.30",
+  "version": "2.2.37",
   "peerDependencies": {
-    "@angular/common": "^12.0.5",
-    "@angular/core": "^12.0.5",
+    "@angular/common": ">=12.0.5",
+    "@angular/core": ">=12.0.5",
     "css-element-queries": "^1.2.3"
   },
   "bugs": {
