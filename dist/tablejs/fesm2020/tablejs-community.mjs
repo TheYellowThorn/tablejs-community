@@ -969,8 +969,10 @@ class ScrollViewportDirective {
     }
     ngOnDestroy() {
         this.listElm = null;
-        this.virtualNexus.virtualForDirective._viewContainer.detach(0);
-        this.virtualNexus.virtualForDirective._viewContainer.clear();
+        if (this.virtualNexus && this.virtualNexus.virtualForDirective) {
+            this.virtualNexus.virtualForDirective._viewContainer.detach(0);
+            this.virtualNexus.virtualForDirective._viewContainer.clear();
+        }
         this.items = [];
         this.elementRef.nativeElement.scrollViewport = null;
         this.templateRef = null;
@@ -1769,7 +1771,6 @@ class GridDirective extends TablejsGridProxy {
         this.columnReorderEnd = new EventEmitter();
         this.preGridInitialize = new EventEmitter(true);
         this.gridInitialize = new EventEmitter(true);
-        console.warn('TableJS has been moved!  Please install the newest versions from https://www.npmjs.com/package/@tablejs/community (npm install @tablejs/community).');
         this.registerDirectiveToElement();
         this.attachMutationObserver();
     }

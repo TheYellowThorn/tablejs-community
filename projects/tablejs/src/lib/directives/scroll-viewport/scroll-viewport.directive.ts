@@ -494,8 +494,10 @@ export class ScrollViewportDirective implements AfterViewInit, OnDestroy, OnInit
 
   public ngOnDestroy() {
     this.listElm = null;
-    this.virtualNexus!.virtualForDirective!._viewContainer.detach(0);
-    this.virtualNexus!.virtualForDirective!._viewContainer.clear();
+    if (this.virtualNexus && this.virtualNexus.virtualForDirective) {
+      this.virtualNexus!.virtualForDirective!._viewContainer.detach(0);
+      this.virtualNexus!.virtualForDirective!._viewContainer.clear();
+    }
     this.items = [];
     this.elementRef.nativeElement.scrollViewport = null;
     this.templateRef = null;

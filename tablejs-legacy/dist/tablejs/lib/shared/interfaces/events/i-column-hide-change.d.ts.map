@@ -1,1 +1,0 @@
-{"version":3,"file":"i-column-hide-change.d.ts","sourceRoot":"","sources":["../../../../../../projects/tablejs/src/lib/shared/interfaces/events/i-column-hide-change.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,gBAAgB,EAAE,MAAM,yBAAyB,CAAC;AAE3D,MAAM,WAAW,iBAAiB;IAChC,eAAe,EAAE,gBAAgB,CAAC;IAClC,MAAM,EAAE,OAAO,CAAC;IAChB,wBAAwB,EAAE,OAAO,CAAC;CACnC"}

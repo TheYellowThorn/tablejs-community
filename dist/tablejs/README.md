@@ -7,9 +7,9 @@ Tablejs is an open-source solution for displaying complex grid content in Angula
 ![Grid Example](https://github.com/tablejs/community/blob/master/readmes/grid.png?raw=)
 
 Please visit our [GitHub](https://github.com/tablejs/community) for more resources:<br/>
-[Demo](https://transunionui.github.io/tablejs/demo/)<br/>
-[API Documentation](https://transunionui.github.io/tablejs/api/)<br/>
-[Examples](https://transunionui.github.io/tablejs/examples/)
+[Demo](https://theyellowthorn.github.io/tablejs/demo/)<br/>
+[API Documentation](https://theyellowthorn.github.io/tablejs/api/)<br/>
+[Examples](https://theyellowthorn.github.io/tablejs/examples/)
 
 
 Instructions for using Tablejs.

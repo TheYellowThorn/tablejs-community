@@ -1,1 +1,0 @@
-{"version":3,"file":"i-column-hierarchy.d.ts","sourceRoot":"","sources":["../../../../../projects/tablejs/src/lib/shared/interfaces/i-column-hierarchy.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,gBAAgB;IAC7B,KAAK,EAAE,MAAM,CAAC;IACd,OAAO,EAAE,OAAO,CAAC;IACjB,MAAM,EAAE,OAAO,CAAC;IAChB,YAAY,EAAE,OAAO,GAAG,IAAI,CAAC;IAC7B,UAAU,EAAE,gBAAgB,EAAE,CAAC;CAClC"}

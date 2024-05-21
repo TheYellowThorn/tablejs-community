@@ -176,6 +176,8 @@ describe('GridDirective', () => {
 
   beforeEach(waitForAsync(() => {
     // Set up test service before each test
+
+    console.log = () => {};
     TestBed.configureTestingModule({
       imports: [OverlayModule],
       declarations: [HostComponent, GridDirective],
