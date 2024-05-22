@@ -1026,6 +1026,7 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
     this.totalComputedWidth += amountMoved;
 
     const gridTemplateColumns: string = this.constructGridTemplateColumns();
+
     this.gridTemplateTypes.forEach(styleObj => {      
       styleObj.style.innerHTML = this.id + ' .' + this.reorderableClass + ' { display: grid; grid-template-columns:' + gridTemplateColumns + '; }';
       this.setStyleContent();
@@ -2367,7 +2368,6 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
         this.scrollbarAdjustmentStyle = document.createElement('style');
         this.setScrollbarAdjustmentStyle();
         this.scrollbarAdjustmentFragment.appendChild(this.scrollbarAdjustmentStyle);
-  
         this.addStyle(this.scrollbarAdjustmentStyle, false);
       }
 
@@ -2376,7 +2376,7 @@ export class GridDirective extends TablejsGridProxy implements AfterViewInit, On
   
   private setScrollbarAdjustmentStyle(): void {
     this.scrollbarWidth = this.viewport!.offsetWidth - this.viewport!.clientWidth;
-    this.scrollbarAdjustmentStyle!.innerHTML = '#' + this.viewportID + ' > .reorderable-table-row { width: calc(100% + ' + (this.scrollbarWidth - 1) + 'px); }';
+    this.scrollbarAdjustmentStyle!.innerHTML = this.id + ' tbody > .' + this.reorderableClass + ' { width: calc(100% + ' + (this.scrollbarWidth - 1) + 'px); }';
     this.setStyleContent();
   }
 
